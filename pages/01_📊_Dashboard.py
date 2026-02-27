@@ -62,7 +62,7 @@ st.markdown(
         transform: translateY(-2px);
     }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">☕ Support Us</a>
+    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Us</a>
     """,
     unsafe_allow_html=True,
 )
@@ -264,3 +264,12 @@ else:
                     )
 
         st.divider()
+
+
+st.markdown(
+    f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
+    f"CDM © 2026 &nbsp;·&nbsp; Built with Streamlit &nbsp;·&nbsp; "
+    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Us</a>"
+    f"</center>",
+    unsafe_allow_html=True,
+)
