@@ -1,0 +1,1 @@
+from .economic_table import render_economic_table
