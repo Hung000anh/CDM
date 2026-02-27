@@ -25,11 +25,20 @@ def _get_available_timeframes(symbols: list[dict]) -> set[str]:
     return available
 
 
+def _on_select_all_changed(all_key: str, item_keys: list[str]):
+    """Select All toggled → apply value to all items."""
+    val = st.session_state[all_key]
+    for k in item_keys:
+        st.session_state[k] = val
+
+
+def _on_item_changed(all_key: str, item_keys: list[str]):
+    """Any item toggled → sync Select All to reflect actual state."""
+    st.session_state[all_key] = all(st.session_state.get(k, True) for k in item_keys)
+
+
 def render_sidebar() -> dict | None:
     with st.sidebar:
-        # st.title("🫓 CDM")
-        # st.divider()
-
         # ── Step 1: Asset Type ──────────────────────────────────────────────
         asset_types = get_asset_types()
         if not asset_types:
@@ -55,11 +64,30 @@ def render_sidebar() -> dict | None:
                 st.info("No countries found.")
                 return None
 
+            all_key   = "chk_all_countries"
+            item_keys = [f"chk_country_{c['id']}" for c in countries]
+
+            # Init defaults
+            for k in item_keys:
+                st.session_state.setdefault(k, True)
+            st.session_state.setdefault(all_key, True)
+
             selected_countries: list[dict] = []
             with st.expander("🌍 Country", expanded=True):
-                select_all_countries = st.checkbox("Select all", value=True, key="chk_all_countries")
-                for c in countries:
-                    if st.checkbox(c["name"], value=select_all_countries, key=f"chk_country_{c['id']}"):
+                st.checkbox(
+                    "Select all",
+                    key=all_key,
+                    on_change=_on_select_all_changed,
+                    args=(all_key, item_keys),
+                )
+                for c, k in zip(countries, item_keys):
+                    st.checkbox(
+                        c["name"],
+                        key=k,
+                        on_change=_on_item_changed,
+                        args=(all_key, item_keys),
+                    )
+                    if st.session_state[k]:
                         selected_countries.append(c)
 
             if not selected_countries:
@@ -83,6 +111,21 @@ def render_sidebar() -> dict | None:
                 st.info("No economic indicators found for the selected countries.")
                 return None
 
+            st.divider()
+            st.markdown(
+                """
+                <a href="https://buymeacoffee.com/hung000anh" target="_blank"
+                   style="display:block;text-align:center;
+                          background:linear-gradient(135deg,#f97316,#ef4444);
+                          color:#fff;font-weight:700;font-size:14px;
+                          padding:11px 0;border-radius:20px;text-decoration:none;
+                          box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                    ☕ Buy Me a Coffee
+                </a>
+                """,
+                unsafe_allow_html=True,
+            )
+
             return {
                 "asset_type_id":      asset_type_id,
                 "asset_type_name":    selected_at_name,
@@ -99,15 +142,30 @@ def render_sidebar() -> dict | None:
             st.info(f"No symbols found in **{selected_at_name}**.")
             return None
 
+        all_key   = f"chk_all_sym_{asset_type_id}"
+        item_keys = [f"chk_sym_{sym['id']}" for sym in symbols]
+
+        # Init defaults
+        for k in item_keys:
+            st.session_state.setdefault(k, True)
+        st.session_state.setdefault(all_key, True)
+
         chosen_symbols: list[dict] = []
         with st.expander("📌 Symbol", expanded=True):
-            select_all = st.checkbox("Select all", value=True, key=f"chk_all_sym_{asset_type_id}")
-            for sym in symbols:
-                label = sym["symbol"]
-                if sym.get("exchange"):
-                    # label += f" `{sym['exchange']}`"
-                    label += f""
-                if st.checkbox(label, value=select_all, key=f"chk_sym_{sym['id']}"):
+            st.checkbox(
+                "Select all",
+                key=all_key,
+                on_change=_on_select_all_changed,
+                args=(all_key, item_keys),
+            )
+            for sym, k in zip(symbols, item_keys):
+                st.checkbox(
+                    sym["symbol"],
+                    key=k,
+                    on_change=_on_item_changed,
+                    args=(all_key, item_keys),
+                )
+                if st.session_state[k]:
                     chosen_symbols.append(sym)
 
         if not chosen_symbols:
@@ -129,6 +187,21 @@ def render_sidebar() -> dict | None:
 
         if not selected_tfs:
             st.caption("⚠️ No timeframe selected.")
+
+        st.divider()
+        st.markdown(
+            """
+            <a href="https://buymeacoffee.com/hung000anh" target="_blank"
+               style="display:block;text-align:center;
+                      background:linear-gradient(135deg,#f97316,#ef4444);
+                      color:#fff;font-weight:700;font-size:14px;
+                      padding:11px 0;border-radius:20px;text-decoration:none;
+                      box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                ☕ Buy Me a Coffee
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
 
         return {
             "asset_type_id":   asset_type_id,
