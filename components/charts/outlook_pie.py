@@ -77,7 +77,7 @@ def render_outlook_pie(
     fig.savefig(buf, format="png", dpi=130, bbox_inches="tight", facecolor=_BG)
     plt.close(fig)
     buf.seek(0)
-    st.image(buf, width=True)
+    st.image(buf, width="stretch")
 
 
 def render_outlook_row(

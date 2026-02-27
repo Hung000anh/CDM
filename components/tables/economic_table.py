@@ -202,4 +202,4 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
         axis=0,
     )
 
-    st.dataframe(styled, width=True)
+    st.dataframe(styled, width="stretch")
