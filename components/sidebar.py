@@ -200,7 +200,7 @@ def render_sidebar() -> dict | None:
                 ☕ Buy Me a Coffee
             </a>
             """,
-            unsafe_allow_html=True,
+            unsafe_allow_html=True, 
         )
 
         return {
