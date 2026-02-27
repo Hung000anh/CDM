@@ -59,16 +59,16 @@ st.markdown("## Core Features")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.image("https://images.unsplash.com/photo-1642790106117-e829e14a795f", use_container_width=True)
+    st.image("https://images.unsplash.com/photo-1642790106117-e829e14a795f", width=True)
     st.markdown("### Candlestick & Volume")
     st.markdown("Multi-timeframe charts with consistent dark styling.")
 
 with col2:
-    st.image("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3", use_container_width=True)
+    st.image("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3", width=True)
     st.markdown("### COT & Positioning")
     st.markdown("COT Index, extreme zones, and net positioning analysis.")
 
 with col3:
-    st.image("https://images.unsplash.com/photo-1559526324-593bc073d938", use_container_width=True)
+    st.image("https://images.unsplash.com/photo-1559526324-593bc073d938", width=True)
     st.markdown("### Seasonality & Sentiment")
     st.markdown("Seasonality averages and community sentiment visualization.")

@@ -176,7 +176,7 @@ def render_candlestick(
     fig.savefig(buf, format="png", dpi=120, bbox_inches="tight", facecolor="#212121")
     plt.close(fig)
     buf.seek(0)
-    st.image(buf, use_container_width=True)
+    st.image(buf, width=True)
 
 
 def render_line(
@@ -240,4 +240,4 @@ def render_line(
     fig.savefig(buf, format="png", dpi=150, bbox_inches="tight", facecolor="#212121")
     plt.close(fig)
     buf.seek(0)
-    st.image(buf, use_container_width=True)
+    st.image(buf, width=True)
