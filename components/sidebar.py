@@ -27,8 +27,8 @@ def _get_available_timeframes(symbols: list[dict]) -> set[str]:
 
 def render_sidebar() -> dict | None:
     with st.sidebar:
-        st.title("🫓 CDM")
-        st.divider()
+        # st.title("🫓 CDM")
+        # st.divider()
 
         # ── Step 1: Asset Type ──────────────────────────────────────────────
         asset_types = get_asset_types()
