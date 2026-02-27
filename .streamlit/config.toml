@@ -1,0 +1,11 @@
+[server]
+headless = true
+
+[runner]
+# Đảm bảo import hoạt động từ root project
+fastReruns = true
+
+[theme]
+base="dark"
+backgroundColor="#212121"
+secondaryBackgroundColor="#3f3f3f"
