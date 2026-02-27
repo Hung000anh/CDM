@@ -45,7 +45,7 @@ st.markdown(
     <style>
     .support-fab {{
         position: fixed;
-        bottom: 24px;
+        bottom: 60px;
         right: 24px;
         z-index: 99999;
         background: linear-gradient(135deg, #f97316, #ef4444);
