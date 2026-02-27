@@ -43,7 +43,7 @@ st.markdown(
     <div style="padding:40px 0 10px 0">
         <h1 style="font-size:42px;margin-bottom:10px">🫓 CDM</h1>
         <p style="font-size:18px;max-width:800px">
-        CDM (Chart & Data Monitor) is an integrated market analysis platform.
+        CDM is an integrated market analysis platform.
         It provides price charts, COT positioning data, seasonality statistics,
         and community sentiment in a unified interface.
         </p>
