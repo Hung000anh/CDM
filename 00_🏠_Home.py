@@ -122,6 +122,48 @@ st.markdown(
         font-weight: 600;
         margin-bottom: 12px;
     }}
+
+    .source-card {{
+        background: #161616;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        padding: 24px 20px;
+        text-align: center;
+        height: 100%;
+        transition: border-color .2s;
+    }}
+    .source-card:hover {{ border-color: #f97316; }}
+    .source-card .src-icon {{ font-size: 36px; margin-bottom: 10px; }}
+    .source-card h4 {{
+        font-size: 15px; font-weight: 700;
+        color: #fff; margin: 0 0 8px 0;
+    }}
+    .source-card p {{
+        font-size: 12.5px; color: #888;
+        line-height: 1.6; margin: 0;
+    }}
+
+    .disclaimer-box {{
+        background: rgba(239,68,68,0.06);
+        border: 1px solid rgba(239,68,68,0.25);
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        padding: 24px 28px;
+        margin-top: 8px;
+    }}
+    .disclaimer-box h4 {{
+        color: #ef4444;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+    }}
+    .disclaimer-box p {{
+        color: #aaa;
+        font-size: 13px;
+        line-height: 1.8;
+        margin: 0;
+    }}
+    .disclaimer-box strong {{ color: #ddd; }}
     </style>
     <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Us</a>
     """,
@@ -236,19 +278,19 @@ for col, (icon, title, desc, badges) in zip(
     st.columns(3),
     [
         (
-            "🌍", "Forex",
+            "💲", "Forex",
             "Major and minor currency pairs with full OHLCV history, COT futures "
             "positioning, multi-timeframe structure, and real-time sentiment.",
             ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."],
         ),
         (
-            "📊", "Economic",
+            "🏛️", "Economic",
             "Macro indicators across G8 economies — inflation, interest rates, "
             "GDP, unemployment, trade balance, and industrial production.",
             ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."],
         ),
         (
-            "₿", "Crypto",
+            "🪙", "Crypto",
             "Major digital assets with spot price, volume, COT futures positioning "
             "(where available), market structure, and community sentiment.",
             ["BTC", "ETH", "XRP"],
@@ -285,10 +327,8 @@ st.markdown(
 roadmap_items = [
     ("₿", "Crypto Expansion",
      "Market cap, FDV, circulating/max/total supply, ATH tracking, and more pairs."),
-    # ("📊", "Economic Depth", "Central bank policy calendars, yield curves, PMI, and commodity benchmarks."),
     ("📈", "Stock Coverage",
      "Add symbols for stocks like SP500, E-mini S&P 500 (ES), Nasdaq 100 (NQ), Dow Jones (DJI)."),
-    # ("🔔", "Alerts & Watchlist", "Custom alerts on COT extremes, price levels, and sentiment thresholds."),
 ]
 
 cols = st.columns(4)
@@ -335,6 +375,97 @@ for col, (num, title, desc) in zip([left, left, right, right], steps):
             f'</div>',
             unsafe_allow_html=True,
         )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# DATA SOURCES
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## 📡 Data Sources")
+st.markdown(
+    "<p style='color:#888;font-size:14px;margin-bottom:24px;'>"
+    "Data is collected and aggregated from the following publicly available sources."
+    "</p>",
+    unsafe_allow_html=True,
+)
+
+src_cols = st.columns(4)
+sources = [
+    (
+        "📊", "TradingView",
+        "Historical OHLCV price data for Forex, Crypto, and other financial assets. "
+        "Primary source for candlestick charts and technical analysis.",
+    ),
+    (
+        "🌐", "Myfxbook",
+        "Community market sentiment data (Community Outlook) — real-time Long/Short "
+        "ratios from retail traders, refreshed every 4 hours.",
+    ),
+    (
+        "🏛️", "CFTC",
+        "Weekly Commitment of Traders (COT) reports from the U.S. Commodity Futures "
+        "Trading Commission. Basis for Large Speculator & Commercial positioning analysis.",
+    ),
+    (
+        "🪙", "CoinGecko",
+        "Cryptocurrency market data including price, market cap, trading volume, "
+        "and general coin overview information.",
+    ),
+]
+
+for col, (icon, name, desc) in zip(src_cols, sources):
+    with col:
+        st.markdown(
+            f'<div class="source-card">'
+            f'<div class="src-icon">{icon}</div>'
+            f'<h4>{name}</h4>'
+            f'<p>{desc}</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# DISCLAIMER
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## ⚠️ Disclaimer")
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class="disclaimer-box">
+        <p>
+            All data, charts, and information displayed on this platform are
+            <strong>intended solely for educational, research, and community reference purposes</strong>.
+            We are <strong>not</strong> a financial advisory firm, do not provide investment
+            recommendations, and bear no responsibility for any trading decisions made based
+            on information from this platform.
+        </p>
+        <br>
+        <p>
+            Data is currently collected from publicly available sources including — but not
+            limited to — <strong>TradingView, Myfxbook, CFTC, and CoinGecko</strong>.
+            Additional sources may be integrated in the future as the platform expands.
+            All data may be subject to delays, inaccuracies, or incompleteness. We make no
+            guarantees regarding the accuracy, timeliness, or completeness of any
+            information provided.
+        </p>
+        <br>
+        <p>
+            <strong>Financial trading involves substantial risk of loss.</strong> You may lose
+            all of your invested capital. Always conduct your own research
+            (<em>DYOR — Do Your Own Research</em>) and consult a qualified financial
+            professional before making any investment decisions.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
