@@ -278,19 +278,19 @@ for col, (icon, title, desc, badges) in zip(
     st.columns(3),
     [
         (
-            "🌍", "Forex",
+            "💲", "Forex",
             "Major and minor currency pairs with full OHLCV history, COT futures "
             "positioning, multi-timeframe structure, and real-time sentiment.",
             ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."],
         ),
         (
-            "📊", "Economic",
+            "🌎", "Economic",
             "Macro indicators across G8 economies — inflation, interest rates, "
             "GDP, unemployment, trade balance, and industrial production.",
             ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."],
         ),
         (
-            "₿", "Crypto",
+            "🪙", "Crypto",
             "Major digital assets with spot price, volume, COT futures positioning "
             "(where available), market structure, and community sentiment.",
             ["BTC", "ETH", "XRP"],
