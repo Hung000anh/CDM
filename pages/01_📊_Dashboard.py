@@ -1,47 +1,24 @@
 """
-dashboard.py
+00_🏠_Home.py
 """
 
-import utils.path_setup  # noqa: F401
-import sys
-from pathlib import Path
-from collections import defaultdict
-
-_ROOT = Path(__file__).resolve().parent
-if str(_ROOT) not in sys.path:
-    sys.path.insert(0, str(_ROOT))
-
-import pandas as pd
 import streamlit as st
-from components.sidebar import render_sidebar
-from components.charts.candlestick import render_candlestick, render_line
-from components.charts.outlook_pie import render_outlook_pie
-from components.charts.cot_chart import render_cot_chart, render_net_noncommercial
-from components.charts.seasonality import render_seasonality
-from components.tables.economic_table import render_economic_table
-from data.queries.prices import get_prices
-from data.queries.symbols import get_timeframes_by_symbol, get_countries
-from data.queries.myfxbook import get_community_outlook
-from data.queries.cftc import get_cot_data
-
-KNOWN_INDICATORS = [
-    "GDP", "Real GDP YoY", "Government Budget", "Government Debt To GDP",
-    "Interest Rate", "Inflation Rate YoY", "Unemployment Rate",
-    "Industrial Production YoY", "Current Account To GDP", "Balance Of Trade",
-]
-
-SUPPORT_URL = "https://byvn.net/Hblp"
 
 st.set_page_config(
-    page_title="CDM | Dashboard",
+    page_title="CDM | Home",
     page_icon="🫓",
     layout="wide",
 )
 
-# ── Support Us button – luôn hiển thị góc dưới phải ─────────────────────────
+SUPPORT_URL = "https://byvn.net/Hblp"
+BMC_URL     = "https://buymeacoffee.com/hung000anh"
+
+# ── Global styles + Support FAB ───────────────────────────────────────────────
 st.markdown(
     f"""
     <style>
+    .block-container {{ padding-top: 2rem; }}
+
     .support-fab {{
         position: fixed;
         bottom: 60px;
@@ -57,219 +34,451 @@ st.markdown(
         box-shadow: 0 4px 14px rgba(0,0,0,0.45);
         transition: opacity .2s, transform .2s;
     }}
-    .support-fab:hover {{
-        opacity: 0.88;
-        transform: translateY(-2px);
+    .support-fab:hover {{ opacity: 0.88; transform: translateY(-2px); }}
+
+    .metric-card {{
+        background: #1e1e1e;
+        border: 1px solid #2e2e2e;
+        border-radius: 12px;
+        padding: 20px 24px;
+        text-align: center;
     }}
+    .metric-card .metric-value {{
+        font-size: 32px;
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.1;
+    }}
+    .metric-card .metric-label {{
+        font-size: 13px;
+        color: #888;
+        margin-top: 4px;
+    }}
+
+    .feature-card {{
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        padding: 28px 24px;
+        height: 100%;
+    }}
+    .feature-card .icon {{ font-size: 32px; margin-bottom: 12px; }}
+    .feature-card h3 {{ font-size: 18px; font-weight: 700; margin: 0 0 10px 0; color: #fff; }}
+    .feature-card p  {{ font-size: 14px; color: #aaa; line-height: 1.6; margin: 0; }}
+
+    .asset-row {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }}
+    .asset-badge {{
+        background: #2a2a2a;
+        border: 1px solid #3a3a3a;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 12px;
+        color: #bbb;
+    }}
+
+    .step-row {{ display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }}
+    .step-num {{
+        min-width: 36px; height: 36px;
+        background: linear-gradient(135deg, #f97316, #ef4444);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 15px; color: #fff;
+        flex-shrink: 0;
+    }}
+    .step-body h4 {{ margin: 0 0 4px 0; font-size: 15px; color: #fff; font-weight: 600; }}
+    .step-body p  {{ margin: 0; font-size: 13px; color: #999; line-height: 1.6; }}
+
+    .roadmap-card {{
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        padding: 24px;
+        height: 100%;
+    }}
+    .roadmap-card h4 {{
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 6px 0;
+    }}
+    .roadmap-card p {{
+        font-size: 13px;
+        color: #888;
+        margin: 0;
+        line-height: 1.5;
+    }}
+    .roadmap-icon {{
+        font-size: 22px;
+        margin-bottom: 10px;
+    }}
+    .coming-soon-tag {{
+        display: inline-block;
+        background: rgba(249,115,22,0.12);
+        border: 1px dashed #f97316;
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-size: 11px;
+        color: #f97316;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }}
+
+    .source-card {{
+        background: #161616;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        padding: 24px 20px;
+        text-align: center;
+        height: 100%;
+        transition: border-color .2s;
+    }}
+    .source-card:hover {{ border-color: #f97316; }}
+    .source-card .src-icon {{ font-size: 36px; margin-bottom: 10px; }}
+    .source-card h4 {{
+        font-size: 15px; font-weight: 700;
+        color: #fff; margin: 0 0 8px 0;
+    }}
+    .source-card p {{
+        font-size: 12.5px; color: #888;
+        line-height: 1.6; margin: 0;
+    }}
+
+    .disclaimer-box {{
+        background: rgba(239,68,68,0.06);
+        border: 1px solid rgba(239,68,68,0.25);
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        padding: 24px 28px;
+        margin-top: 8px;
+    }}
+    .disclaimer-box h4 {{
+        color: #ef4444;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+    }}
+    .disclaimer-box p {{
+        color: #aaa;
+        font-size: 13px;
+        line-height: 1.8;
+        margin: 0;
+    }}
+    .disclaimer-box strong {{ color: #ddd; }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Me</a>
+    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Us</a>
     """,
     unsafe_allow_html=True,
 )
 
-sidebar = render_sidebar()
-if not sidebar or not sidebar["symbols"]:
-    st.markdown(
-        """
-        <div style="display:flex;justify-content:center;align-items:center;
-        height:60vh;flex-direction:column;gap:16px">
-            <h1>🫓 CDM</h1>
-            <p>Select a market type and at least 1 symbol in the sidebar.</p>
+
+# ═══════════════════════════════════════════════════════════════════
+# HERO
+# ═══════════════════════════════════════════════════════════════════
+st.markdown(
+    f"""
+    <div style="padding: 48px 0 32px 0;">
+        <div style="font-size:12px;color:#f97316;font-weight:700;
+                    letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;">
+            Market Intelligence Platform
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.stop()
+        <div style="display:flex;align-items:center;gap:20px;margin:0 0 18px 0;flex-wrap:wrap;">
+            <h1 style="font-size:52px;font-weight:900;margin:0;line-height:1.05;">
+                🫓 CDM
+            </h1>
+            <a href="{BMC_URL}" target="_blank"
+               style="display:inline-block;
+                      background:linear-gradient(135deg,#f97316,#ef4444);
+                      color:#fff;font-weight:700;font-size:14px;
+                      padding:10px 22px;border-radius:20px;text-decoration:none;
+                      box-shadow:0 4px 12px rgba(239,68,68,0.35);
+                      white-space:nowrap;">
+                ☕ Buy Me a Coffee
+            </a>
+        </div>
+        <p style="font-size:17px;color:#999;max-width:600px;line-height:1.8;margin:0 0 36px 0;">
+            An integrated platform combining price charts, COT positioning,
+            seasonality statistics, and community sentiment — all in one place.
+        </p>
+        <a href="/Dashboard" target="_self"
+           style="display:inline-block;
+                  background:linear-gradient(135deg,#f97316,#ef4444);
+                  color:#fff;font-weight:700;font-size:15px;
+                  padding:14px 32px;border-radius:24px;text-decoration:none;
+                  box-shadow:0 4px 14px rgba(239,68,68,0.35);">
+            Open Dashboard →
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-is_economic    = sidebar["is_economic"]
-chosen_symbols = sidebar["symbols"]
-chosen_tfs     = sidebar["timeframes"]
+# ── Stats ────────────────────────────────────────────────────────────────────
+c1, c2, c3, c4 = st.columns(4)
+for col, (val, label) in zip(
+    [c1, c2, c3, c4],
+    [("3", "Asset Classes"), ("5", "Timeframes"), ("100+", "Symbols"), ("4h", "Sentiment Refresh")],
+):
+    with col:
+        st.markdown(
+            f'<div class="metric-card">'
+            f'<div class="metric-value">{val}</div>'
+            f'<div class="metric-label">{label}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
-if not is_economic and not chosen_tfs:
-    st.warning("No timeframe selected.")
-    st.stop()
-
-# ── Outlook ───────────────────────────────────────────────────────────────────
-outlook_lookup: dict = {}
-if not is_economic:
-    try:
-        with st.spinner("Loading Community Outlook…"):
-            outlook_raw = get_community_outlook()
-            outlook_lookup = {s["name"].upper(): s for s in outlook_raw}
-    except Exception as exc:
-        st.warning(f"⚠️ Could not load Community Outlook: {exc}")
-
-
-def _find_outlook(symbol_str: str) -> dict | None:
-    base = symbol_str.split(":")[-1]
-    key  = base.upper().replace("/", "").replace("_", "").replace(".", "")
-    for candidate in [key, key[:6]]:
-        if candidate in outlook_lookup:
-            return outlook_lookup[candidate]
-    return None
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# ECONOMIC
-# ═══════════════════════════════════════════════════════════════════════════════
-if is_economic:
-    ECON_COLS = 3
-
-    selected_countries = sidebar.get("selected_countries", [])
-    is_all             = sidebar.get("is_all_countries", True)
-
-    countries_list     = get_countries()
-    country_id_to_name = {c["id"]: c["name"] for c in countries_list}
-
-    grouped: dict = defaultdict(list)
-    for sym in chosen_symbols:
-        cid   = sym.get("country_id")
-        cname = country_id_to_name.get(cid, "Other") if cid else "Other"
-        grouped[cname].append(sym)
-
-    if is_all or len(selected_countries) > 1:
-        groups = dict(sorted(grouped.items()))
-    else:
-        groups = dict(grouped)
-
-    if is_all:
-        st.markdown("## 🌐 All")
-        st.divider()
-    elif len(selected_countries) > 1:
-        names = ", ".join(c["name"] for c in selected_countries)
-        st.markdown(f"## 🌍 {names}")
-        st.divider()
-
-    econ_records = []
-
-    for group_label, syms in groups.items():
-        st.markdown(f"### 🌍 {group_label}" if is_all or len(selected_countries) > 1 else f"## 🌍 {group_label}")
-        st.divider()
-
-        cols = None
-        for idx, sym in enumerate(syms):
-            tf_list = get_timeframes_by_symbol(sym["id"])
-            if not tf_list:
-                continue
-            tf      = tf_list[0]
-            stf_id  = tf["symbol_timeframe_id"]
-            tf_name = tf["name"]
-
-            col_idx = idx % ECON_COLS
-            if col_idx == 0:
-                cols = st.columns(ECON_COLS)
-
-            with cols[col_idx]:
-                with st.spinner(f"{sym['name']}"):
-                    df = get_prices(stf_id, tf_name)
-                    render_line(df, symbol=sym["name"], timeframe=tf_name)
-
-            current  = float(df["close"].iloc[-1]) if not df.empty else None
-            previous = float(df["close"].iloc[-2]) if len(df) >= 2 else None
-            cid      = sym.get("country_id")
-            country  = country_id_to_name.get(cid, "Unknown") if cid else "Unknown"
-            raw_name = sym["name"].strip()
-            indicator = next(
-                (ind for ind in sorted(KNOWN_INDICATORS, key=len, reverse=True)
-                 if raw_name.endswith(ind)),
-                raw_name,
-            )
-            econ_records.append({
-                "country":        country,
-                "indicator":      indicator,
-                "current_value":  current,
-                "previous_value": previous,
-            })
-
-        st.divider()
-
-    st.markdown("## 📊 Economic Indicators Summary")
-    st.divider()
-    render_economic_table(pd.DataFrame(econ_records), filter_country=None)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# NORMAL
-# ═══════════════════════════════════════════════════════════════════════════════
-else:
-    n_tf     = len(chosen_tfs)
-    _fsize   = {1: (14, 5), 2: (10, 5), 3: (8, 4.8)}
-    fig_size = _fsize.get(n_tf, (7, 4.5))
-
-    for sym in chosen_symbols:
-        tf_list = get_timeframes_by_symbol(sym["id"])
-        tf_map  = {tf["name"]: tf for tf in tf_list}
-        if not any(tf in tf_map for tf in chosen_tfs):
-            continue
-
-        st.markdown(f"#### {sym['symbol']}")
-
-        df_cache: dict[str, object] = {}
-        candle_cols = st.columns(n_tf)
-        for col_idx, tf_name in enumerate(chosen_tfs):
-            with candle_cols[col_idx]:
-                if tf_name not in tf_map:
-                    st.empty()
-                    continue
-                stf_id = tf_map[tf_name]["symbol_timeframe_id"]
-                with st.spinner(f"{sym['symbol']} [{tf_name}]"):
-                    df = get_prices(stf_id, tf_name)
-                    df_cache[tf_name] = df
-                    render_candlestick(df, symbol=sym["symbol"], timeframe=tf_name, figsize=fig_size)
-
-        outlook = _find_outlook(sym["symbol"])
-        cftc_id = sym.get("cftc_contract_id")
-        has_outlook = outlook is not None
-        has_cot     = cftc_id is not None
-        has_1m      = "1M" in tf_map
-
-        if has_outlook or has_cot or has_1m:
-            df_cot = None
-            if has_cot:
-                with st.spinner(f"COT {sym['symbol']}…"):
-                    df_cot = get_cot_data(cftc_id)
-
-            df_1m = df_cache.get("1M")
-            if df_1m is None and has_1m:
-                df_1m = get_prices(tf_map["1M"]["symbol_timeframe_id"], "1M")
-
-            has_cot_data = df_cot is not None and not df_cot.empty
-            has_1m_data  = df_1m  is not None and not df_1m.empty
-            has_left     = has_1m_data or has_cot_data
-
-            if has_left and has_outlook:
-                col_left, col_right = st.columns([4, 1])
-            elif has_left:
-                col_left, col_right = st.container(), None
-            elif has_outlook:
-                col_left, col_right = None, st.container()
-            else:
-                col_left = col_right = None
-
-            if col_left is not None:
-                with col_left:
-                    if has_1m_data:
-                        render_seasonality(df_1m, symbol=sym["symbol"], figsize=(18, 1.5))
-                    if has_cot_data:
-                        render_cot_chart(df_cot, symbol=sym["symbol"], lookback=52, figsize=(18, 1.5))
-                        render_net_noncommercial(df_cot, symbol=sym["symbol"], lookback=52, figsize=(18, 1.5))
-
-            if col_right is not None and has_outlook:
-                with col_right:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    render_outlook_pie(
-                        symbol_name=sym["symbol"],
-                        long_pct=outlook["longPercentage"],
-                        short_pct=outlook["shortPercentage"],
-                        figsize=(3.0, 3.0),
-                    )
-
-        st.divider()
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
 
 
+# ═══════════════════════════════════════════════════════════════════
+# CORE FEATURES
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## Core Features")
+st.markdown("<br>", unsafe_allow_html=True)
+
+for col, (icon, title, desc) in zip(
+    st.columns(4),
+    [
+        ("📈", "Candlestick & Volume",
+         "Multi-timeframe OHLCV charts with dark styling, swing high/low markers, "
+         "and moving averages across 1D, 1W, and 1M."),
+        ("📋", "COT Positioning",
+         "COT Index (0–100) for Commercials, Large Speculators, and Retail. "
+         "Highlights extreme zones and net non-commercial positions."),
+        ("🌊", "Seasonality",
+         "Monthly average % change over 2y, 5y, 10y, 15y, and 20y lookback periods. "
+         "Identifies recurring seasonal patterns per symbol."),
+        ("🧭", "Community Sentiment",
+         "Long/Short % from Myfxbook community outlook, refreshed every 4 hours. "
+         "Displayed as a donut chart alongside each symbol."),
+    ],
+):
+    with col:
+        st.markdown(
+            f'<div class="feature-card">'
+            f'<div class="icon">{icon}</div>'
+            f'<h3>{title}</h3>'
+            f'<p>{desc}</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# DATA COVERAGE
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## Data Coverage")
+st.markdown("<br>", unsafe_allow_html=True)
+
+for col, (icon, title, desc, badges) in zip(
+    st.columns(3),
+    [
+        (
+            "🌍", "Forex",
+            "Major and minor currency pairs with full OHLCV history, COT futures "
+            "positioning, multi-timeframe structure, and real-time sentiment.",
+            ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."],
+        ),
+        (
+            "📊", "Economic",
+            "Macro indicators across G8 economies — inflation, interest rates, "
+            "GDP, unemployment, trade balance, and industrial production.",
+            ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."],
+        ),
+        (
+            "₿", "Crypto",
+            "Major digital assets with spot price, volume, COT futures positioning "
+            "(where available), market structure, and community sentiment.",
+            ["BTC", "ETH", "XRP"],
+        ),
+    ],
+):
+    badges_html = "".join(f'<span class="asset-badge">{b}</span>' for b in badges)
+    with col:
+        st.markdown(
+            f'<div class="feature-card">'
+            f'<div class="icon">{icon}</div>'
+            f'<h3>{title}</h3>'
+            f'<p>{desc}</p>'
+            f'<div class="asset-row">{badges_html}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# ROADMAP
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## 🗺️ Roadmap")
+st.markdown(
+    "<p style='color:#888;font-size:14px;margin-bottom:24px;'>"
+    "What we're researching and building next."
+    "</p>",
+    unsafe_allow_html=True,
+)
+
+roadmap_items = [
+    ("₿", "Crypto Expansion",
+     "Market cap, FDV, circulating/max/total supply, ATH tracking, and more pairs."),
+    ("📈", "Stock Coverage",
+     "Add symbols for stocks like SP500, E-mini S&P 500 (ES), Nasdaq 100 (NQ), Dow Jones (DJI)."),
+]
+
+cols = st.columns(4)
+for i, (icon, title, desc) in enumerate(roadmap_items):
+    with cols[i]:
+        st.markdown(
+            f'<div class="roadmap-card">'
+            f'<div class="roadmap-icon">{icon}</div>'
+            f'<div class="coming-soon-tag">Researching</div>'
+            f'<h4>{title}</h4>'
+            f'<p>{desc}</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# HOW TO USE
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## How to Use")
+st.markdown("<br>", unsafe_allow_html=True)
+
+left, right = st.columns(2)
+steps = [
+    ("1", "Select a Market Type",
+     "Open the sidebar and choose Forex, Economic, or Crypto from the asset type selector."),
+    ("2", "Pick Your Symbols",
+     "Select one or more symbols to analyze. For Economic, you can filter by country."),
+    ("3", "Choose Timeframes",
+     "Select the timeframes you want: 1D, 1W, 1M, 3M, or 12M."),
+    ("4", "Analyze",
+     "Charts, COT data, seasonality, and sentiment load automatically on the Dashboard."),
+]
+
+for col, (num, title, desc) in zip([left, left, right, right], steps):
+    with col:
+        st.markdown(
+            f'<div class="step-row">'
+            f'<div class="step-num">{num}</div>'
+            f'<div class="step-body"><h4>{title}</h4><p>{desc}</p></div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# DATA SOURCES
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## 📡 Data Sources")
+st.markdown(
+    "<p style='color:#888;font-size:14px;margin-bottom:24px;'>"
+    "Data is collected and aggregated from the following publicly available sources."
+    "</p>",
+    unsafe_allow_html=True,
+)
+
+src_cols = st.columns(4)
+sources = [
+    (
+        "📊", "TradingView",
+        "Historical OHLCV price data for Forex, Crypto, and other financial assets. "
+        "Primary source for candlestick charts and technical analysis.",
+    ),
+    (
+        "🌐", "Myfxbook",
+        "Community market sentiment data (Community Outlook) — real-time Long/Short "
+        "ratios from retail traders, refreshed every 4 hours.",
+    ),
+    (
+        "🏛️", "CFTC",
+        "Weekly Commitment of Traders (COT) reports from the U.S. Commodity Futures "
+        "Trading Commission. Basis for Large Speculator & Commercial positioning analysis.",
+    ),
+    (
+        "🪙", "CoinGecko",
+        "Cryptocurrency market data including price, market cap, trading volume, "
+        "and general coin overview information.",
+    ),
+]
+
+for col, (icon, name, desc) in zip(src_cols, sources):
+    with col:
+        st.markdown(
+            f'<div class="source-card">'
+            f'<div class="src-icon">{icon}</div>'
+            f'<h4>{name}</h4>'
+            f'<p>{desc}</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# DISCLAIMER
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## ⚠️ Disclaimer")
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class="disclaimer-box">
+        <h4>⚠️ DISCLAIMER</h4>
+        <p>
+            All data, charts, and information displayed on this platform are
+            <strong>intended solely for educational, research, and community reference purposes</strong>.
+            I am <strong>not</strong> a financial advisor, do not provide investment
+            recommendations, and bear no responsibility for any trading decisions made based
+            on information from this platform.
+        </p>
+        <br>
+        <p>
+            Data is currently collected from publicly available sources including — but not
+            limited to — <strong>TradingView, Myfxbook, CFTC, and CoinGecko</strong>.
+            Additional sources may be integrated in the future as the platform expands.
+            All data may be subject to delays, inaccuracies, or incompleteness. I make no
+            guarantees regarding the accuracy, timeliness, or completeness of any
+            information provided.
+        </p>
+        <br>
+        <p>
+            <strong>Financial trading involves substantial risk of loss.</strong> You may lose
+            all of your invested capital. Always conduct your own research
+            (<em>DYOR — Do Your Own Research</em>) and consult a qualified financial
+            professional before making any investment decisions.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# FOOTER
+# ═══════════════════════════════════════════════════════════════════
+st.divider()
 st.markdown(
     f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
     f"CDM © 2026 &nbsp;·&nbsp; Built with Streamlit &nbsp;·&nbsp; "
-    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Me</a>"
+    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Us</a>"
     f"</center>",
     unsafe_allow_html=True,
 )
