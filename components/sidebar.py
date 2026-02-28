@@ -15,6 +15,8 @@ from data.queries.symbols import get_countries, get_symbols_by_country
 from config import SUPPORTED_TIMEFRAMES, TIMEFRAME_LABELS
 
 ECONOMIC_ASSET_TYPE = "Economy"
+GMAIL              = "hung000anh@gmail.com"
+BMC_URL            = "https://buymeacoffee.com/hung000anh"
 
 
 def _get_available_timeframes(symbols: list[dict]) -> set[str]:
@@ -35,6 +37,48 @@ def _on_select_all_changed(all_key: str, item_keys: list[str]):
 def _on_item_changed(all_key: str, item_keys: list[str]):
     """Any item toggled → sync Select All to reflect actual state."""
     st.session_state[all_key] = all(st.session_state.get(k, True) for k in item_keys)
+
+
+def _render_sidebar_footer():
+    """Buy Me a Coffee button + contact info — rendered at the bottom of sidebar."""
+    st.divider()
+    st.markdown(
+        f"""
+        <a href="{BMC_URL}" target="_blank"
+           style="display:block;text-align:center;
+                  background:linear-gradient(135deg,#f97316,#ef4444);
+                  color:#fff;font-weight:700;font-size:14px;
+                  padding:11px 0;border-radius:20px;text-decoration:none;
+                  box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+            ☕ Buy Me a Coffee
+        </a>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"""
+        <div style="margin-top:16px;padding:14px 16px;
+                    background:#1a1a1a;border:1px solid #2a2a2a;
+                    border-radius:12px;text-align:center;">
+            <div style="font-size:11px;color:#666;
+                        text-transform:uppercase;letter-spacing:1.5px;
+                        margin-bottom:8px;">Contact</div>
+            <a href="https://mail.google.com/mail/?view=cm&to={GMAIL}"
+               style="display:inline-flex;align-items:center;gap:7px;
+                      color:#f97316;font-size:13px;font-weight:600;
+                      text-decoration:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+                {GMAIL}
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_sidebar() -> dict | None:
@@ -92,6 +136,7 @@ def render_sidebar() -> dict | None:
 
             if not selected_countries:
                 st.caption("⚠️ No country selected.")
+                _render_sidebar_footer()
                 return None
 
             is_all = len(selected_countries) == len(countries)
@@ -109,22 +154,10 @@ def render_sidebar() -> dict | None:
 
             if not chosen_symbols:
                 st.info("No economic indicators found for the selected countries.")
+                _render_sidebar_footer()
                 return None
 
-            st.divider()
-            st.markdown(
-                """
-                <a href="https://buymeacoffee.com/hung000anh" target="_blank"
-                   style="display:block;text-align:center;
-                          background:linear-gradient(135deg,#f97316,#ef4444);
-                          color:#fff;font-weight:700;font-size:14px;
-                          padding:11px 0;border-radius:20px;text-decoration:none;
-                          box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-                    ☕ Buy Me a Coffee
-                </a>
-                """,
-                unsafe_allow_html=True,
-            )
+            _render_sidebar_footer()
 
             return {
                 "asset_type_id":      asset_type_id,
@@ -140,6 +173,7 @@ def render_sidebar() -> dict | None:
         symbols = get_symbols_by_asset_type(asset_type_id)
         if not symbols:
             st.info(f"No symbols found in **{selected_at_name}**.")
+            _render_sidebar_footer()
             return None
 
         all_key   = f"chk_all_sym_{asset_type_id}"
@@ -188,20 +222,7 @@ def render_sidebar() -> dict | None:
         if not selected_tfs:
             st.caption("⚠️ No timeframe selected.")
 
-        st.divider()
-        st.markdown(
-            """
-            <a href="https://buymeacoffee.com/hung000anh" target="_blank"
-               style="display:block;text-align:center;
-                      background:linear-gradient(135deg,#f97316,#ef4444);
-                      color:#fff;font-weight:700;font-size:14px;
-                      padding:11px 0;border-radius:20px;text-decoration:none;
-                      box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-                ☕ Buy Me a Coffee
-            </a>
-            """,
-            unsafe_allow_html=True, 
-        )
+        _render_sidebar_footer()
 
         return {
             "asset_type_id":   asset_type_id,

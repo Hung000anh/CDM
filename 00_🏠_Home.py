@@ -12,6 +12,47 @@ st.set_page_config(
 
 SUPPORT_URL = "https://byvn.net/Hblp"
 BMC_URL     = "https://buymeacoffee.com/hung000anh"
+GMAIL       = "hung000anh@gmail.com"
+
+# ── Sidebar ───────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown(
+        f"""
+        <a href="{BMC_URL}" target="_blank"
+           style="display:block;text-align:center;
+                  background:linear-gradient(135deg,#f97316,#ef4444);
+                  color:#fff;font-weight:700;font-size:14px;
+                  padding:11px 0;border-radius:20px;text-decoration:none;
+                  box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+            ☕ Buy Me a Coffee
+        </a>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"""
+        <div style="margin-top:16px;padding:14px 16px;
+                    background:#1a1a1a;border:1px solid #2a2a2a;
+                    border-radius:12px;text-align:center;">
+            <div style="font-size:11px;color:#666;
+                        text-transform:uppercase;letter-spacing:1.5px;
+                        margin-bottom:8px;">Contact</div>
+            <a href="https://mail.google.com/mail/?view=cm&to={GMAIL}"
+               style="display:inline-flex;align-items:center;gap:7px;
+                      color:#f97316;font-size:13px;font-weight:600;
+                      text-decoration:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+                {GMAIL}
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # ── Global styles + Support FAB ───────────────────────────────────────────────
 st.markdown(
@@ -164,6 +205,36 @@ st.markdown(
         margin: 0;
     }}
     .disclaimer-box strong {{ color: #ddd; }}
+
+    .contact-box {{
+        background: #161616;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        padding: 32px 28px;
+        text-align: center;
+        max-width: 480px;
+        margin: 0 auto;
+    }}
+    .contact-box h3 {{
+        font-size: 18px; font-weight: 700;
+        color: #fff; margin: 0 0 8px 0;
+    }}
+    .contact-box p {{
+        font-size: 13px; color: #888;
+        margin: 0 0 20px 0; line-height: 1.6;
+    }}
+    .contact-link {{
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(249,115,22,0.1);
+        border: 1px solid rgba(249,115,22,0.35);
+        border-radius: 20px;
+        padding: 10px 20px;
+        color: #f97316 !important;
+        font-size: 14px; font-weight: 600;
+        text-decoration: none !important;
+        transition: background .2s;
+    }}
+    .contact-link:hover {{ background: rgba(249,115,22,0.2); }}
     </style>
     <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Me</a>
     """,
@@ -185,15 +256,6 @@ st.markdown(
             <h1 style="font-size:52px;font-weight:900;margin:0;line-height:1.05;">
                 🫓 CDM
             </h1>
-            <a href="{BMC_URL}" target="_blank"
-               style="display:inline-block;
-                      background:linear-gradient(135deg,#f97316,#ef4444);
-                      color:#fff;font-weight:700;font-size:14px;
-                      padding:10px 22px;border-radius:20px;text-decoration:none;
-                      box-shadow:0 4px 12px rgba(239,68,68,0.35);
-                      white-space:nowrap;">
-                ☕ Buy Me a Coffee
-            </a>
         </div>
         <p style="font-size:17px;color:#999;max-width:600px;line-height:1.8;margin:0 0 36px 0;">
             An integrated platform combining price charts, COT positioning,
@@ -278,19 +340,19 @@ for col, (icon, title, desc, badges) in zip(
     st.columns(3),
     [
         (
-            "💲", "Forex",
+            "🌍", "Forex",
             "Major and minor currency pairs with full OHLCV history, COT futures "
             "positioning, multi-timeframe structure, and real-time sentiment.",
             ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."],
         ),
         (
-            "🌎", "Economic",
+            "📊", "Economic",
             "Macro indicators across G8 economies — inflation, interest rates, "
             "GDP, unemployment, trade balance, and industrial production.",
             ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."],
         ),
         (
-            "🪙", "Crypto",
+            "₿", "Crypto",
             "Major digital assets with spot price, volume, COT futures positioning "
             "(where available), market structure, and community sentiment.",
             ["BTC", "ETH", "XRP"],
