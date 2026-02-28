@@ -165,7 +165,7 @@ st.markdown(
     }}
     .disclaimer-box strong {{ color: #ddd; }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Me</a>
+    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Us</a>
     """,
     unsafe_allow_html=True,
 )
@@ -284,7 +284,7 @@ for col, (icon, title, desc, badges) in zip(
             ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."],
         ),
         (
-            "🏛️", "Economic",
+            "🌎", "Economic",
             "Macro indicators across G8 economies — inflation, interest rates, "
             "GDP, unemployment, trade balance, and industrial production.",
             ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."],
@@ -439,10 +439,11 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
     """
     <div class="disclaimer-box">
+        <h4>⚠️ DISCLAIMER</h4>
         <p>
             All data, charts, and information displayed on this platform are
             <strong>intended solely for educational, research, and community reference purposes</strong>.
-            We are <strong>not</strong> a financial advisory firm, do not provide investment
+            I am <strong>not</strong> a financial advisor, do not provide investment
             recommendations, and bear no responsibility for any trading decisions made based
             on information from this platform.
         </p>
@@ -451,7 +452,7 @@ st.markdown(
             Data is currently collected from publicly available sources including — but not
             limited to — <strong>TradingView, Myfxbook, CFTC, and CoinGecko</strong>.
             Additional sources may be integrated in the future as the platform expands.
-            All data may be subject to delays, inaccuracies, or incompleteness. We make no
+            All data may be subject to delays, inaccuracies, or incompleteness. I make no
             guarantees regarding the accuracy, timeliness, or completeness of any
             information provided.
         </p>
@@ -477,7 +478,7 @@ st.divider()
 st.markdown(
     f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
     f"CDM © 2026 &nbsp;·&nbsp; Built with Streamlit &nbsp;·&nbsp; "
-    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Me</a>"
+    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Us</a>"
     f"</center>",
     unsafe_allow_html=True,
 )
