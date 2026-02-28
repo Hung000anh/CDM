@@ -443,92 +443,42 @@ st.divider()
 
 
 # ═══════════════════════════════════════════════════════════════════
-# DATA SOURCES
-# ═══════════════════════════════════════════════════════════════════
-st.markdown("## 📡 Data Sources")
-st.markdown(
-    "<p style='color:#888;font-size:14px;margin-bottom:24px;'>"
-    "Data is collected and aggregated from the following publicly available sources."
-    "</p>",
-    unsafe_allow_html=True,
-)
-
-src_cols = st.columns(4)
-sources = [
-    (
-        "📊", "TradingView",
-        "Historical OHLCV price data for Forex, Crypto, and other financial assets. "
-        "Primary source for candlestick charts and technical analysis.",
-    ),
-    (
-        "🌐", "Myfxbook",
-        "Community market sentiment data (Community Outlook) — real-time Long/Short "
-        "ratios from retail traders, refreshed every 4 hours.",
-    ),
-    (
-        "🏛️", "CFTC",
-        "Weekly Commitment of Traders (COT) reports from the U.S. Commodity Futures "
-        "Trading Commission. Basis for Large Speculator & Commercial positioning analysis.",
-    ),
-    (
-        "🪙", "CoinGecko",
-        "Cryptocurrency market data including price, market cap, trading volume, "
-        "and general coin overview information.",
-    ),
-]
-
-for col, (icon, name, desc) in zip(src_cols, sources):
-    with col:
-        st.markdown(
-            f'<div class="source-card">'
-            f'<div class="src-icon">{icon}</div>'
-            f'<h4>{name}</h4>'
-            f'<p>{desc}</p>'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
-
-st.markdown("<br>", unsafe_allow_html=True)
-st.divider()
-
-
-# ═══════════════════════════════════════════════════════════════════
 # DISCLAIMER
 # ═══════════════════════════════════════════════════════════════════
 st.markdown("## ⚠️ Disclaimer")
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div class="disclaimer-box">
-        <h4>⚠️ DISCLAIMER</h4>
-        <p>
-            All data, charts, and information displayed on this platform are
-            <strong>intended solely for educational, research, and community reference purposes</strong>.
-            I am <strong>not</strong> a financial advisor, do not provide investment
-            recommendations, and bear no responsibility for any trading decisions made based
-            on information from this platform.
-        </p>
-        <br>
-        <p>
-            Data is currently collected from publicly available sources including — but not
-            limited to — <strong>TradingView, Myfxbook, CFTC, and CoinGecko</strong>.
-            Additional sources may be integrated in the future as the platform expands.
-            All data may be subject to delays, inaccuracies, or incompleteness. I make no
-            guarantees regarding the accuracy, timeliness, or completeness of any
-            information provided.
-        </p>
-        <br>
-        <p>
-            <strong>Financial trading involves substantial risk of loss.</strong> You may lose
-            all of your invested capital. Always conduct your own research
-            (<em>DYOR — Do Your Own Research</em>) and consult a qualified financial
-            professional before making any investment decisions.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown("""
+<div class="disclaimer-box">
+<h4>⚠️ DISCLAIMER</h4>
+
+All data, charts, analytics, and information presented on this platform are
+<strong>for educational and research purposes only</strong>.
+This platform does not provide financial, investment, legal, or tax advice.
+Nothing here should be interpreted as a recommendation to buy or sell
+any financial instrument.
+
+<br>
+
+Market data and charting information may be sourced from third-party
+financial data providers and publicly accessible platforms.
+This platform is <strong>not affiliated with, endorsed by, or sponsored by</strong>
+any data provider or exchange.
+All information is provided "as is" without warranties of any kind,
+including accuracy, completeness, or timeliness.
+
+<br>
+
+<span style="color:#d9534f;">
+<strong>Trading and investing involve substantial risk of loss.</strong>
+Past performance does not guarantee future results.
+You may lose all or part of your invested capital.
+Always conduct independent research (DYOR) and consult a licensed
+financial professional before making investment decisions.
+</span>
+
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
