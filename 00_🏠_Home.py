@@ -450,8 +450,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="disclaimer-box">
-<h4>⚠️ DISCLAIMER</h4>
-
+            
 All data, charts, analytics, and information presented on this platform are
 <strong>for educational and research purposes only</strong>.
 This platform does not provide financial, investment, legal, or tax advice.
