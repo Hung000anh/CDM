@@ -250,9 +250,20 @@ else:
                     if has_1m_data:
                         render_seasonality(df_1m, symbol=sym["symbol"], figsize=(18, 1.5))
                     if has_cot_data:
-                        render_cot_chart(df_cot, symbol=sym["symbol"], lookback=52, figsize=(18, 1.5))
-                        render_net_noncommercial(df_cot, symbol=sym["symbol"], lookback=52, figsize=(18, 1.5))
-
+                        render_cot_chart(
+                            df_cot,
+                            symbol=sym["symbol"],
+                            cftc_name=sym.get("cftc_name", ""),   # ← thêm
+                            lookback=52,
+                            figsize=(18, 1.5),
+                        )
+                        render_net_noncommercial(
+                            df_cot,
+                            symbol=sym["symbol"],
+                            cftc_name=sym.get("cftc_name", ""),   # ← thêm
+                            lookback=52,
+                            figsize=(18, 1.5),
+                        )
             if col_right is not None and has_outlook:
                 with col_right:
                     st.markdown("<br>", unsafe_allow_html=True)

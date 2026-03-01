@@ -34,7 +34,7 @@ def get_symbols_by_asset_type(asset_type_id: str) -> list[dict]:
     client = get_client()
     res = (
         client.table("symbols")
-        .select("id, symbol, name, cftc_contract_id, country_id, exchanges(name)")
+        .select("id, symbol, name, cftc_contract_id, country_id, exchanges(name), cftc_contracts(contract_name)") # ← thêm
         .eq("asset_type_id", asset_type_id)
         .order("symbol")
         .execute()
@@ -46,6 +46,7 @@ def get_symbols_by_asset_type(asset_type_id: str) -> list[dict]:
             "symbol": r["symbol"],
             "name": r["name"],
             "cftc_contract_id": r.get("cftc_contract_id"),
+            "cftc_name": (r.get("cftc_contracts") or {}).get("contract_name", ""),  # ← thêm
             "country_id": r.get("country_id"),
             "exchange": (r.get("exchanges") or {}).get("name", ""),
         })
@@ -54,14 +55,10 @@ def get_symbols_by_asset_type(asset_type_id: str) -> list[dict]:
 
 @cache_long
 def get_symbols_by_country(asset_type_id: str, country_id: str) -> list[dict]:
-    """
-    Trả về symbols thuộc asset_type_id VÀ country_id chỉ định.
-    Dùng cho Economic asset type khi user chọn country.
-    """
     client = get_client()
     res = (
         client.table("symbols")
-        .select("id, symbol, name, cftc_contract_id, country_id, exchanges(name)")
+        .select("id, symbol, name, cftc_contract_id, country_id, exchanges(name), cftc_contracts(contract_name)")  # ← thêm
         .eq("asset_type_id", asset_type_id)
         .eq("country_id", country_id)
         .order("symbol")
@@ -74,6 +71,7 @@ def get_symbols_by_country(asset_type_id: str, country_id: str) -> list[dict]:
             "symbol": r["symbol"],
             "name": r["name"],
             "cftc_contract_id": r.get("cftc_contract_id"),
+            "cftc_name": (r.get("cftc_contracts") or {}).get("contract_name", ""), # ← thêm
             "country_id": r.get("country_id"),
             "exchange": (r.get("exchanges") or {}).get("name", ""),
         })

@@ -30,6 +30,7 @@ _RCPARAMS = {
 def render_cot_chart(
     df,
     symbol: str = "",
+    cftc_name: str = "",   # ← thêm
     lookback: int = 52,
     figsize: tuple = (25, 3),
 ) -> None:
@@ -83,7 +84,7 @@ def render_cot_chart(
             elif comm < 20 and retail > 80:
                 ax.axvspan(x0, x1, color="red", alpha=0.1)
 
-        title = f"COT Index"
+        title = f"COT Index – {cftc_name or symbol}"
         ax.set_title(title)
         ax.set_xlabel("Date")
         ax.set_ylabel("COT Index (0-100)")
@@ -96,6 +97,7 @@ def render_cot_chart(
 def render_net_noncommercial(
     df,
     symbol: str = "",
+    cftc_name: str = "",   # ← thêm
     lookback: int = 52,
     figsize: tuple = (25, 3),
 ) -> None:
@@ -147,7 +149,7 @@ def render_net_noncommercial(
 
         ax.axhline(0, color="white", linewidth=0.8, linestyle="--")
 
-        title = f"Non-Commercial Net Position"
+        title = f"Non-Commercial Net Position – {cftc_name or symbol}"
         ax.set_title(title)
         ax.set_ylabel("Contracts")
         ax.grid(True, linewidth=0.3)
