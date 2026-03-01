@@ -3,6 +3,7 @@
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="CDM | Home",
@@ -13,6 +14,29 @@ st.set_page_config(
 SUPPORT_URL = "https://byvn.net/Hblp"
 BMC_URL     = "https://buymeacoffee.com/hung000anh"
 GMAIL       = "hung000anh@gmail.com"
+
+# ── Monetag Ad – Banner đầu trang ────────────────────────────────────────────
+components.html(
+    """
+    <div id="monetag-banner-top" style="
+        width: 100%;
+        min-height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        margin-bottom: 4px;
+    ">
+        <script
+            src="//thubanoa.com/1?z=1c4779d5387629aee789c034faab22ef"
+            async
+            data-cfasync="false">
+        </script>
+    </div>
+    """,
+    height=100,
+    scrolling=False,
+)
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
