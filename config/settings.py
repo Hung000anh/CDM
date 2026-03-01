@@ -19,6 +19,7 @@ def _get(key: str) -> str:
 SUPABASE_URL: str = _get("SUPABASE_URL")
 SUPABASE_KEY: str = _get("SUPABASE_KEY")
 
+
 # ── Cache TTL (seconds) ───────────────────────────────────────────────────────
 CACHE_TTL_SHORT  = 60        # frequently changing data (realtime prices)
 CACHE_TTL_MEDIUM = 60 * 10   # 10 minutes – daily data
