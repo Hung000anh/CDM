@@ -3,7 +3,7 @@
 """
 
 import streamlit as st
-import streamlit.components.v1 as components
+from components.ads import render_banner_ad
 
 st.set_page_config(
     page_title="CDM | Home",
@@ -15,28 +15,8 @@ SUPPORT_URL = "https://byvn.net/Hblp"
 BMC_URL     = "https://buymeacoffee.com/hung000anh"
 GMAIL       = "hung000anh@gmail.com"
 
-# ── Monetag Ad – Banner đầu trang ────────────────────────────────────────────
-components.html(
-    """
-    <div id="monetag-banner-top" style="
-        width: 100%;
-        min-height: 90px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: transparent;
-        margin-bottom: 4px;
-    ">
-        <script
-            src="//thubanoa.com/1?z=1c4779d5387629aee789c034faab22ef"
-            async
-            data-cfasync="false">
-        </script>
-    </div>
-    """,
-    height=100,
-    scrolling=False,
-)
+# ── Monetag Banner – đầu trang ────────────────────────────────────────────────
+render_banner_ad(width=728, height=90)
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -83,188 +63,64 @@ st.markdown(
     f"""
     <style>
     .block-container {{ padding-top: 2rem; }}
-
     .support-fab {{
-        position: fixed;
-        bottom: 60px;
-        right: 24px;
-        z-index: 99999;
+        position: fixed; bottom: 60px; right: 24px; z-index: 99999;
         background: linear-gradient(135deg, #f97316, #ef4444);
-        color: #ffffff !important;
-        font-size: 15px;
-        font-weight: 700;
-        padding: 13px 28px;
-        border-radius: 24px;
-        text-decoration: none !important;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.45);
-        transition: opacity .2s, transform .2s;
+        color: #ffffff !important; font-size: 15px; font-weight: 700;
+        padding: 13px 28px; border-radius: 24px; text-decoration: none !important;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.45); transition: opacity .2s, transform .2s;
     }}
     .support-fab:hover {{ opacity: 0.88; transform: translateY(-2px); }}
-
     .metric-card {{
-        background: #1e1e1e;
-        border: 1px solid #2e2e2e;
-        border-radius: 12px;
-        padding: 20px 24px;
-        text-align: center;
+        background: #1e1e1e; border: 1px solid #2e2e2e;
+        border-radius: 12px; padding: 20px 24px; text-align: center;
     }}
-    .metric-card .metric-value {{
-        font-size: 32px;
-        font-weight: 800;
-        color: #ffffff;
-        line-height: 1.1;
-    }}
-    .metric-card .metric-label {{
-        font-size: 13px;
-        color: #888;
-        margin-top: 4px;
-    }}
-
+    .metric-card .metric-value {{ font-size: 32px; font-weight: 800; color: #ffffff; line-height: 1.1; }}
+    .metric-card .metric-label {{ font-size: 13px; color: #888; margin-top: 4px; }}
     .feature-card {{
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 14px;
-        padding: 28px 24px;
-        height: 100%;
+        background: #1a1a1a; border: 1px solid #2a2a2a;
+        border-radius: 14px; padding: 28px 24px; height: 100%;
     }}
     .feature-card .icon {{ font-size: 32px; margin-bottom: 12px; }}
     .feature-card h3 {{ font-size: 18px; font-weight: 700; margin: 0 0 10px 0; color: #fff; }}
     .feature-card p  {{ font-size: 14px; color: #aaa; line-height: 1.6; margin: 0; }}
-
     .asset-row {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }}
     .asset-badge {{
-        background: #2a2a2a;
-        border: 1px solid #3a3a3a;
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 12px;
-        color: #bbb;
+        background: #2a2a2a; border: 1px solid #3a3a3a;
+        border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #bbb;
     }}
-
     .step-row {{ display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }}
     .step-num {{
         min-width: 36px; height: 36px;
         background: linear-gradient(135deg, #f97316, #ef4444);
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 800; font-size: 15px; color: #fff;
-        flex-shrink: 0;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 15px; color: #fff; flex-shrink: 0;
     }}
     .step-body h4 {{ margin: 0 0 4px 0; font-size: 15px; color: #fff; font-weight: 600; }}
     .step-body p  {{ margin: 0; font-size: 13px; color: #999; line-height: 1.6; }}
-
     .roadmap-card {{
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 14px;
-        padding: 24px;
-        height: 100%;
+        background: #1a1a1a; border: 1px solid #2a2a2a;
+        border-radius: 14px; padding: 24px; height: 100%;
     }}
-    .roadmap-card h4 {{
-        font-size: 15px;
-        font-weight: 700;
-        color: #fff;
-        margin: 0 0 6px 0;
-    }}
-    .roadmap-card p {{
-        font-size: 13px;
-        color: #888;
-        margin: 0;
-        line-height: 1.5;
-    }}
-    .roadmap-icon {{
-        font-size: 22px;
-        margin-bottom: 10px;
-    }}
+    .roadmap-card h4 {{ font-size: 15px; font-weight: 700; color: #fff; margin: 0 0 6px 0; }}
+    .roadmap-card p  {{ font-size: 13px; color: #888; margin: 0; line-height: 1.5; }}
+    .roadmap-icon    {{ font-size: 22px; margin-bottom: 10px; }}
     .coming-soon-tag {{
-        display: inline-block;
-        background: rgba(249,115,22,0.12);
-        border: 1px dashed #f97316;
-        border-radius: 20px;
-        padding: 2px 10px;
-        font-size: 11px;
-        color: #f97316;
-        font-weight: 600;
-        margin-bottom: 12px;
+        display: inline-block; background: rgba(249,115,22,0.12);
+        border: 1px dashed #f97316; border-radius: 20px; padding: 2px 10px;
+        font-size: 11px; color: #f97316; font-weight: 600; margin-bottom: 12px;
     }}
-
-    .source-card {{
-        background: #161616;
-        border: 1px solid #2a2a2a;
-        border-radius: 14px;
-        padding: 24px 20px;
-        text-align: center;
-        height: 100%;
-        transition: border-color .2s;
-    }}
-    .source-card:hover {{ border-color: #f97316; }}
-    .source-card .src-icon {{ font-size: 36px; margin-bottom: 10px; }}
-    .source-card h4 {{
-        font-size: 15px; font-weight: 700;
-        color: #fff; margin: 0 0 8px 0;
-    }}
-    .source-card p {{
-        font-size: 12.5px; color: #888;
-        line-height: 1.6; margin: 0;
-    }}
-
     .disclaimer-box {{
-        background: rgba(239,68,68,0.06);
-        border: 1px solid rgba(239,68,68,0.25);
-        border-left: 4px solid #ef4444;
-        border-radius: 12px;
-        padding: 24px 28px;
-        margin-top: 8px;
+        background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25);
+        border-left: 4px solid #ef4444; border-radius: 12px; padding: 24px 28px; margin-top: 8px;
     }}
-    .disclaimer-box h4 {{
-        color: #ef4444;
-        font-size: 15px;
-        font-weight: 700;
-        margin: 0 0 12px 0;
-    }}
-    .disclaimer-box p {{
-        color: #aaa;
-        font-size: 13px;
-        line-height: 1.8;
-        margin: 0;
-    }}
+    .disclaimer-box p   {{ color: #aaa; font-size: 13px; line-height: 1.8; margin: 0; }}
     .disclaimer-box strong {{ color: #ddd; }}
-
-    .contact-box {{
-        background: #161616;
-        border: 1px solid #2a2a2a;
-        border-radius: 14px;
-        padding: 32px 28px;
-        text-align: center;
-        max-width: 480px;
-        margin: 0 auto;
-    }}
-    .contact-box h3 {{
-        font-size: 18px; font-weight: 700;
-        color: #fff; margin: 0 0 8px 0;
-    }}
-    .contact-box p {{
-        font-size: 13px; color: #888;
-        margin: 0 0 20px 0; line-height: 1.6;
-    }}
-    .contact-link {{
-        display: inline-flex; align-items: center; gap: 8px;
-        background: rgba(249,115,22,0.1);
-        border: 1px solid rgba(249,115,22,0.35);
-        border-radius: 20px;
-        padding: 10px 20px;
-        color: #f97316 !important;
-        font-size: 14px; font-weight: 600;
-        text-decoration: none !important;
-        transition: background .2s;
-    }}
-    .contact-link:hover {{ background: rgba(249,115,22,0.2); }}
     </style>
     <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Me</a>
     """,
     unsafe_allow_html=True,
 )
-
 
 # ═══════════════════════════════════════════════════════════════════
 # HERO
@@ -276,11 +132,7 @@ st.markdown(
                     letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;">
             Market Intelligence Platform
         </div>
-        <div style="display:flex;align-items:center;gap:20px;margin:0 0 18px 0;flex-wrap:wrap;">
-            <h1 style="font-size:52px;font-weight:900;margin:0;line-height:1.05;">
-                🫓 CDM
-            </h1>
-        </div>
+        <h1 style="font-size:52px;font-weight:900;margin:0 0 18px 0;line-height:1.05;">🫓 CDM</h1>
         <p style="font-size:17px;color:#999;max-width:600px;line-height:1.8;margin:0 0 36px 0;">
             An integrated platform combining price charts, COT positioning,
             seasonality statistics, and community sentiment — all in one place.
@@ -298,7 +150,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ── Stats ────────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 for col, (val, label) in zip(
     [c1, c2, c3, c4],
@@ -315,7 +166,6 @@ for col, (val, label) in zip(
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
-
 
 # ═══════════════════════════════════════════════════════════════════
 # CORE FEATURES
@@ -342,17 +192,13 @@ for col, (icon, title, desc) in zip(
 ):
     with col:
         st.markdown(
-            f'<div class="feature-card">'
-            f'<div class="icon">{icon}</div>'
-            f'<h3>{title}</h3>'
-            f'<p>{desc}</p>'
-            f'</div>',
+            f'<div class="feature-card"><div class="icon">{icon}</div>'
+            f'<h3>{title}</h3><p>{desc}</p></div>',
             unsafe_allow_html=True,
         )
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
-
 
 # ═══════════════════════════════════════════════════════════════════
 # DATA COVERAGE
@@ -363,41 +209,31 @@ st.markdown("<br>", unsafe_allow_html=True)
 for col, (icon, title, desc, badges) in zip(
     st.columns(3),
     [
-        (
-            "🌍", "Forex",
-            "Major and minor currency pairs with full OHLCV history, COT futures "
-            "positioning, multi-timeframe structure, and real-time sentiment.",
-            ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."],
-        ),
-        (
-            "📊", "Economic",
-            "Macro indicators across G8 economies — inflation, interest rates, "
-            "GDP, unemployment, trade balance, and industrial production.",
-            ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."],
-        ),
-        (
-            "₿", "Crypto",
-            "Major digital assets with spot price, volume, COT futures positioning "
-            "(where available), market structure, and community sentiment.",
-            ["BTC", "ETH", "XRP"],
-        ),
+        ("🌍", "Forex",
+         "Major and minor currency pairs with full OHLCV history, COT futures "
+         "positioning, multi-timeframe structure, and real-time sentiment.",
+         ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF", "..."]),
+        ("📊", "Economic",
+         "Macro indicators across G8 economies — inflation, interest rates, "
+         "GDP, unemployment, trade balance, and industrial production.",
+         ["Interest Rate", "Inflation", "GDP", "Unemployment", "Gov Budget", "..."]),
+        ("₿", "Crypto",
+         "Major digital assets with spot price, volume, COT futures positioning "
+         "(where available), market structure, and community sentiment.",
+         ["BTC", "ETH", "XRP"]),
     ],
 ):
     badges_html = "".join(f'<span class="asset-badge">{b}</span>' for b in badges)
     with col:
         st.markdown(
-            f'<div class="feature-card">'
-            f'<div class="icon">{icon}</div>'
-            f'<h3>{title}</h3>'
-            f'<p>{desc}</p>'
-            f'<div class="asset-row">{badges_html}</div>'
-            f'</div>',
+            f'<div class="feature-card"><div class="icon">{icon}</div>'
+            f'<h3>{title}</h3><p>{desc}</p>'
+            f'<div class="asset-row">{badges_html}</div></div>',
             unsafe_allow_html=True,
         )
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
-
 
 # ═══════════════════════════════════════════════════════════════════
 # ROADMAP
@@ -405,34 +241,25 @@ st.divider()
 st.markdown("## 🗺️ Roadmap")
 st.markdown(
     "<p style='color:#888;font-size:14px;margin-bottom:24px;'>"
-    "What we're researching and building next."
-    "</p>",
+    "What we're researching and building next.</p>",
     unsafe_allow_html=True,
 )
 
-roadmap_items = [
-    ("₿", "Crypto Expansion",
-     "Market cap, FDV, circulating/max/total supply, ATH tracking, and more pairs."),
-    ("📈", "Stock Coverage",
-     "Add symbols for stocks like SP500, E-mini S&P 500 (ES), Nasdaq 100 (NQ), Dow Jones (DJI)."),
-]
-
 cols = st.columns(4)
-for i, (icon, title, desc) in enumerate(roadmap_items):
+for i, (icon, title, desc) in enumerate([
+    ("₿", "Crypto Expansion", "Market cap, FDV, circulating/max/total supply, ATH tracking, and more pairs."),
+    ("📈", "Stock Coverage", "Add symbols for stocks like SP500, E-mini S&P 500 (ES), Nasdaq 100 (NQ), Dow Jones (DJI)."),
+]):
     with cols[i]:
         st.markdown(
-            f'<div class="roadmap-card">'
-            f'<div class="roadmap-icon">{icon}</div>'
+            f'<div class="roadmap-card"><div class="roadmap-icon">{icon}</div>'
             f'<div class="coming-soon-tag">Researching</div>'
-            f'<h4>{title}</h4>'
-            f'<p>{desc}</p>'
-            f'</div>',
+            f'<h4>{title}</h4><p>{desc}</p></div>',
             unsafe_allow_html=True,
         )
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
-
 
 # ═══════════════════════════════════════════════════════════════════
 # HOW TO USE
@@ -441,74 +268,51 @@ st.markdown("## How to Use")
 st.markdown("<br>", unsafe_allow_html=True)
 
 left, right = st.columns(2)
-steps = [
-    ("1", "Select a Market Type",
-     "Open the sidebar and choose Forex, Economic, or Crypto from the asset type selector."),
-    ("2", "Pick Your Symbols",
-     "Select one or more symbols to analyze. For Economic, you can filter by country."),
-    ("3", "Choose Timeframes",
-     "Select the timeframes you want: 1D, 1W, 1M, 3M, or 12M."),
-    ("4", "Analyze",
-     "Charts, COT data, seasonality, and sentiment load automatically on the Dashboard."),
-]
-
-for col, (num, title, desc) in zip([left, left, right, right], steps):
+for col, (num, title, desc) in zip(
+    [left, left, right, right],
+    [
+        ("1", "Select a Market Type", "Open the sidebar and choose Forex, Economic, or Crypto from the asset type selector."),
+        ("2", "Pick Your Symbols", "Select one or more symbols to analyze. For Economic, you can filter by country."),
+        ("3", "Choose Timeframes", "Select the timeframes you want: 1D, 1W, 1M, 3M, or 12M."),
+        ("4", "Analyze", "Charts, COT data, seasonality, and sentiment load automatically on the Dashboard."),
+    ],
+):
     with col:
         st.markdown(
-            f'<div class="step-row">'
-            f'<div class="step-num">{num}</div>'
-            f'<div class="step-body"><h4>{title}</h4><p>{desc}</p></div>'
-            f'</div>',
+            f'<div class="step-row"><div class="step-num">{num}</div>'
+            f'<div class="step-body"><h4>{title}</h4><p>{desc}</p></div></div>',
             unsafe_allow_html=True,
         )
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
 
-
 # ═══════════════════════════════════════════════════════════════════
 # DISCLAIMER
 # ═══════════════════════════════════════════════════════════════════
 st.markdown("## ⚠️ Disclaimer")
 st.markdown("<br>", unsafe_allow_html=True)
-
 st.markdown("""
 <div class="disclaimer-box">
-            
 All data, charts, analytics, and information presented on this platform are
 <strong>for educational and research purposes only</strong>.
 This platform does not provide financial, investment, legal, or tax advice.
-Nothing here should be interpreted as a recommendation to buy or sell
-any financial instrument.
-
-<br>
-
-Market data and charting information may be sourced from third-party
-financial data providers and publicly accessible platforms.
-This platform is <strong>not affiliated with, endorsed by, or sponsored by</strong>
-any data provider or exchange.
-All information is provided "as is" without warranties of any kind,
-including accuracy, completeness, or timeliness.
-
-<br>
-
+Nothing here should be interpreted as a recommendation to buy or sell any financial instrument.
+<br><br>
+Market data and charting information may be sourced from third-party financial data providers
+and publicly accessible platforms. This platform is <strong>not affiliated with, endorsed by,
+or sponsored by</strong> any data provider or exchange.
+<br><br>
 <span style="color:#d9534f;">
 <strong>Trading and investing involve substantial risk of loss.</strong>
-Past performance does not guarantee future results.
-You may lose all or part of your invested capital.
-Always conduct independent research (DYOR) and consult a licensed
-financial professional before making investment decisions.
+Past performance does not guarantee future results. You may lose all or part of your invested capital.
+Always conduct independent research (DYOR) and consult a licensed financial professional
+before making investment decisions.
 </span>
-
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-
-# ═══════════════════════════════════════════════════════════════════
-# FOOTER
-# ═══════════════════════════════════════════════════════════════════
 st.divider()
 st.markdown(
     f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
