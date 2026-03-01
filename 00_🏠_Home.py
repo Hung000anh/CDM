@@ -236,7 +236,7 @@ st.markdown(
     }}
     .contact-link:hover {{ background: rgba(249,115,22,0.2); }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Me</a>
+    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click ads to Support Me</a>
     """,
     unsafe_allow_html=True,
 )
@@ -250,7 +250,7 @@ st.markdown(
     <div style="padding: 48px 0 32px 0;">
         <div style="font-size:12px;color:#f97316;font-weight:700;
                     letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;">
-            Market Intelligence Platform
+            Market Intelligence
         </div>
         <div style="display:flex;align-items:center;gap:20px;margin:0 0 18px 0;flex-wrap:wrap;">
             <h1 style="font-size:52px;font-weight:900;margin:0;line-height:1.05;">
@@ -489,7 +489,7 @@ st.divider()
 st.markdown(
     f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
     f"CDM © 2026 &nbsp;·&nbsp; Built with Streamlit &nbsp;·&nbsp; "
-    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Me</a>"
+    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click ads to Support Me</a>"
     f"</center>",
     unsafe_allow_html=True,
 )
