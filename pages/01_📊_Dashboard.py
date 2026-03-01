@@ -62,11 +62,21 @@ st.markdown(
         transform: translateY(-2px);
     }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click to Support Me</a>
+    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click ads to Support Me</a>
     """,
     unsafe_allow_html=True,
 )
-
+st.markdown(
+    """
+    <div style="padding: 24px 0 8px 0;">
+        <div style="font-size:11px;color:#f97316;font-weight:700;
+                    letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;">
+            Market Intelligence
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 sidebar = render_sidebar()
 if not sidebar or not sidebar["symbols"]:
     st.markdown(
@@ -280,7 +290,7 @@ else:
 st.markdown(
     f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
     f"CDM © 2026 &nbsp;·&nbsp; Built with Streamlit &nbsp;·&nbsp; "
-    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click to Support Me</a>"
+    f"<a href='{SUPPORT_URL}' style='color:#f97316;text-decoration:none;'>🙏 Click ads to Support Me</a>"
     f"</center>",
     unsafe_allow_html=True,
 )
