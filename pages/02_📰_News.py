@@ -234,7 +234,7 @@ with st.sidebar:
 
     st.markdown("**🌍 Country**")
 
-    with st.expander("Select country", expanded=False):
+    with st.expander("Select country", expanded=True):
         selected_country_name = st.radio(
             "Select country",
             options=[c["name"] for c in countries],
