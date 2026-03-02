@@ -163,19 +163,12 @@ st.markdown(
 @cache_short
 def fetch_news(
     keyword: str,
-    country_ids: tuple,        # tuple để hashable
+    country_ids: tuple,
     date_from: str,
     date_to: str,
     offset: int,
     limit: int,
 ) -> list[dict]:
-    """
-    Truy vấn news_articles với filter:
-      - keyword: tìm trong title (ilike)
-      - country_ids: tuple of uuid string
-      - date_from / date_to: ISO date string 'YYYY-MM-DD'
-      - offset / limit: phân trang
-    """
     client = get_client()
     q = (
         client.table("news_articles")
@@ -207,7 +200,6 @@ def count_news(
     date_from: str,
     date_to: str,
 ) -> int:
-    """Đếm tổng số bài khớp filter (cho hiển thị số kết quả)."""
     client = get_client()
     q = (
         client.table("news_articles")
@@ -236,38 +228,26 @@ default_from = today - timedelta(days=30)
 
 with st.sidebar:
 
-
-
     # ── Country filter ────────────────────────────────────────────────────────
     countries = get_countries()
     country_id_to_name = {c["id"]: c["name"] for c in countries}
 
     st.markdown("**🌍 Country**")
-    ALL_KEY  = "news_chk_all_countries"
-    C_KEYS   = [f"news_chk_c_{c['id']}" for c in countries]
 
-    for k in C_KEYS:
-        st.session_state.setdefault(k, True)
-    st.session_state.setdefault(ALL_KEY, True)
+    with st.expander("Select country", expanded=False):
+        selected_country_name = st.radio(
+            "Select country",
+            options=[c["name"] for c in countries],
+            key="news_radio_country",
+            label_visibility="collapsed",
+        )
 
-    def _on_all():
-        val = st.session_state[ALL_KEY]
-        for k in C_KEYS:
-            st.session_state[k] = val
+    selected_country = next((c for c in countries if c["name"] == selected_country_name), None)
+    selected_cids    = (selected_country["id"],) if selected_country else ()
+    is_all_countries = False
 
-    def _on_item():
-        st.session_state[ALL_KEY] = all(st.session_state.get(k, True) for k in C_KEYS)
-
-    with st.expander("Select countries", expanded=False):
-        st.checkbox("Select all", key=ALL_KEY, on_change=_on_all)
-        for c, k in zip(countries, C_KEYS):
-            st.checkbox(c["name"], key=k, on_change=_on_item)
-
-    selected_cids = tuple(
-        c["id"] for c, k in zip(countries, C_KEYS) if st.session_state.get(k, True)
-    )
-    is_all_countries = len(selected_cids) == len(countries)
     st.divider()
+
     # ── Search ────────────────────────────────────────────────────────────────
     keyword = st.text_input("Search", placeholder="Search by title…", key="news_search_kw")
 
@@ -276,7 +256,6 @@ with st.sidebar:
     # ── Date range ────────────────────────────────────────────────────────────
     d_from = st.date_input("From", value=default_from, key="news_date_from")
     d_to   = st.date_input("To",   value=today,        key="news_date_to")
-
 
     st.divider()
 
@@ -351,7 +330,6 @@ if d_from and d_to and d_from > d_to:
     st.stop()
 
 # ── Load-more state ───────────────────────────────────────────────────────────
-# Reset offset khi filter thay đổi
 filter_sig = (keyword, filter_cids, date_from_str, date_to_str)
 if st.session_state.get("_last_filter") != filter_sig:
     st.session_state["_last_filter"]  = filter_sig
@@ -408,7 +386,6 @@ else:
                     else '<div class="news-card-img-placeholder">📰</div>'
                 )
 
-                # Format date
                 pub = art.get("published_at", "")
                 try:
                     from datetime import datetime, timezone
