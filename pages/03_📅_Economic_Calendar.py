@@ -214,25 +214,21 @@ with st.sidebar:
     d_to   = st.date_input("To",   value=default_to,   key="cal_date_to")
 
     # Quick presets
-    preset_cols = st.columns(3)
-    with preset_cols[0]:
-        if st.button("This week", key="cal_this_week", use_container_width=True):
-            st.session_state["cal_date_from"] = today - timedelta(days=today.weekday())
-            st.session_state["cal_date_to"]   = today - timedelta(days=today.weekday()) + timedelta(days=6)
-            st.rerun()
-    with preset_cols[1]:
-        if st.button("Next week", key="cal_next_week", use_container_width=True):
-            nw = today - timedelta(days=today.weekday()) + timedelta(weeks=1)
-            st.session_state["cal_date_from"] = nw
-            st.session_state["cal_date_to"]   = nw + timedelta(days=6)
-            st.rerun()
-    with preset_cols[2]:
-        if st.button("This month", key="cal_this_month", use_container_width=True):
-            st.session_state["cal_date_from"] = today.replace(day=1)
-            import calendar
-            last_day = calendar.monthrange(today.year, today.month)[1]
-            st.session_state["cal_date_to"] = today.replace(day=last_day)
-            st.rerun()
+    if st.button("This week", key="cal_this_week", use_container_width=True):
+        st.session_state["cal_date_from"] = today - timedelta(days=today.weekday())
+        st.session_state["cal_date_to"]   = today - timedelta(days=today.weekday()) + timedelta(days=6)
+        st.rerun()
+    if st.button("Next week", key="cal_next_week", use_container_width=True):
+        nw = today - timedelta(days=today.weekday()) + timedelta(weeks=1)
+        st.session_state["cal_date_from"] = nw
+        st.session_state["cal_date_to"]   = nw + timedelta(days=6)
+        st.rerun()
+    if st.button("This month", key="cal_this_month", use_container_width=True):
+        st.session_state["cal_date_from"] = today.replace(day=1)
+        import calendar
+        last_day = calendar.monthrange(today.year, today.month)[1]
+        st.session_state["cal_date_to"] = today.replace(day=last_day)
+        st.rerun()
 
     st.divider()
 
