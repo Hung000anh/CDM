@@ -63,23 +63,27 @@ st.markdown(
 
     .cal-header {{
         display: grid;
-        grid-template-columns: 80px 70px 120px 1fr 110px 110px 110px;
+        grid-template-columns: 70px 60px 100px 1fr 90px 90px 90px;
         gap: 0;
         padding: 10px 16px;
         background: #111;
         border-bottom: 1px solid #2a2a2a;
         font-size: 11px; font-weight: 700;
         color: #555; letter-spacing: 1.5px; text-transform: uppercase;
+        max-width: 900px;
+        margin: 0 auto;
     }}
 
     .cal-row {{
         display: grid;
-        grid-template-columns: 80px 70px 120px 1fr 110px 110px 110px;
+        grid-template-columns: 70px 60px 100px 1fr 90px 90px 90px;
         gap: 0;
         padding: 13px 16px;
         border-bottom: 1px solid #1a1a1a;
         align-items: center;
         transition: background .15s;
+        max-width: 900px;
+        margin: 0 auto;
     }}
     .cal-row:hover {{ background: #161616; }}
 
@@ -129,6 +133,8 @@ st.markdown(
         border-bottom: 2px solid #f97316;
         margin-bottom: 0;
         display: flex; align-items: center; gap: 12px;
+        max-width: 900px;
+        margin: 0 auto;
     }}
     .day-header .day-num {{
         font-size: 36px; font-weight: 900;
@@ -144,6 +150,8 @@ st.markdown(
     .empty-day {{
         padding: 24px 16px;
         font-size: 13px; color: #444; font-style: italic;
+        max-width: 900px;
+        margin: 0 auto;
     }}
 
     /* ── Summary bar ── */
@@ -152,6 +160,8 @@ st.markdown(
         padding: 16px;
         background: #111; border: 1px solid #1e1e1e; border-radius: 12px;
         margin-bottom: 24px;
+        max-width: 900px;
+        margin: 0 auto;
     }}
     .summary-item {{
         display: flex; align-items: center; gap: 8px;
@@ -207,28 +217,11 @@ with st.sidebar:
 
     # ── Date range filter ─────────────────────────────────────────────────────
     st.markdown("**📅 Date Range**")
-    default_from = today - timedelta(days=today.weekday())  # Monday this week
-    default_to   = default_from + timedelta(days=6)         # Sunday this week
+    default_from = today - timedelta(days=today.weekday())
+    default_to   = default_from + timedelta(days=6)
 
     d_from = st.date_input("From", value=default_from, key="cal_date_from")
     d_to   = st.date_input("To",   value=default_to,   key="cal_date_to")
-
-    # Quick presets
-    if st.button("This week", key="cal_this_week", use_container_width=True):
-        st.session_state["cal_date_from"] = today - timedelta(days=today.weekday())
-        st.session_state["cal_date_to"]   = today - timedelta(days=today.weekday()) + timedelta(days=6)
-        st.rerun()
-    if st.button("Next week", key="cal_next_week", use_container_width=True):
-        nw = today - timedelta(days=today.weekday()) + timedelta(weeks=1)
-        st.session_state["cal_date_from"] = nw
-        st.session_state["cal_date_to"]   = nw + timedelta(days=6)
-        st.rerun()
-    if st.button("This month", key="cal_this_month", use_container_width=True):
-        st.session_state["cal_date_from"] = today.replace(day=1)
-        import calendar
-        last_day = calendar.monthrange(today.year, today.month)[1]
-        st.session_state["cal_date_to"] = today.replace(day=last_day)
-        st.rerun()
 
     st.divider()
 
