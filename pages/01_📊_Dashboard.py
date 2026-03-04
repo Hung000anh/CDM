@@ -73,6 +73,13 @@ st.markdown(
                     letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;">
             Market Intelligence
         </div>
+        <h1 style="font-family:'Sora',sans-serif;font-size:38px;
+                   font-weight:900;margin:0 0 6px 0;line-height:1.1;">
+            🫓 CDM Dashboard
+        </h1>
+        <p style="font-size:14px;color:#666;margin:0 0 24px 0;">
+            Multi-timeframe analysis — Candlestick, COT, Seasonality & Community Outlook
+        </p>
     </div>
     """,
     unsafe_allow_html=True,
