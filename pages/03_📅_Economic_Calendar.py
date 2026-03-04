@@ -12,7 +12,7 @@ import utils.path_setup  # noqa: F401
 import sys
 from pathlib import Path
 from datetime import date, timedelta, datetime, timezone
-
+import calendar
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
@@ -217,11 +217,37 @@ with st.sidebar:
 
     # ── Date range filter ─────────────────────────────────────────────────────
     st.markdown("**📅 Date Range**")
-    default_from = today - timedelta(days=today.weekday())
-    default_to   = default_from + timedelta(days=6)
 
-    d_from = st.date_input("From", value=default_from, key="cal_date_from")
-    d_to   = st.date_input("To",   value=default_to,   key="cal_date_to")
+    # ── Tính giá trị mặc định ──────────────────────────────────────────────────
+    last_day = calendar.monthrange(today.year, today.month)[1]
+
+    if "cal_date_from" not in st.session_state:
+        st.session_state["cal_date_from"] = today
+    if "cal_date_to" not in st.session_state:
+        st.session_state["cal_date_to"] = today.replace(day=last_day)
+
+    # ── Quick select buttons ───────────────────────────────────────────────────
+    if st.button("Today"):
+        st.session_state["cal_date_from"] = today
+        st.session_state["cal_date_to"]   = today
+    if st.button("This Week"):
+        st.session_state["cal_date_from"] = today - timedelta(days=today.weekday())
+        st.session_state["cal_date_to"]   = today - timedelta(days=today.weekday()) + timedelta(days=6)
+    if st.button("Next Week"):
+        next_mon = today - timedelta(days=today.weekday()) + timedelta(days=7)
+        st.session_state["cal_date_from"] = next_mon
+        st.session_state["cal_date_to"]   = next_mon + timedelta(days=6)
+    if st.button("This Month"):
+        st.session_state["cal_date_from"] = today.replace(day=1)
+        st.session_state["cal_date_to"]   = today.replace(day=last_day)
+    if st.button("Next Month"):
+        first_next = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
+        st.session_state["cal_date_from"] = first_next
+        st.session_state["cal_date_to"]   = first_next.replace(day=calendar.monthrange(first_next.year, first_next.month)[1])
+
+    # ── Date inputs ────────────────────────────────────────────────────────────
+    d_from = st.date_input("From", key="cal_date_from")
+    d_to   = st.date_input("To",   key="cal_date_to")
 
     st.divider()
 
@@ -241,9 +267,9 @@ with st.sidebar:
     # ── Impact filter ─────────────────────────────────────────────────────────
     st.markdown("**⚡ Impact**")
     impact_options = {
-        "★★★ High":    "high",
-        "★★☆ Medium":  "medium",
-        "★☆☆ Low":     "low",
+        "High":    "high",
+        "Medium":  "medium",
+        "Low":     "low",
         "Holiday":     "holiday",
     }
     selected_impacts = []
@@ -408,10 +434,10 @@ def _actual_class(actual_num, forecast_num, previous_num) -> str:
 def _impact_html(impact: str) -> str:
     color, bg = IMPACT_COLORS.get(impact, ("#6b7280", "#1e1e1e"))
     stars = {
-        "high":    "★★★",
-        "medium":  "★★☆",
-        "low":     "★☆☆",
-        "holiday": "Holiday",
+        "high":    "HIGH",
+        "medium":  "MEDIUM",
+        "low":     "LOW",
+        "holiday": "HOLIDAY",
     }.get(impact, "☆")
     return (
         f'<span class="impact-badge" '
@@ -525,7 +551,7 @@ st.markdown(
     """
     <div style="display:flex;gap:24px;flex-wrap:wrap;padding:16px;
                 background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;
-                font-size:12px;color:#555;">
+                font-size:12px;color:#555;max-width:900px;margin:0 auto;">
         <span><b style="color:#22c55e;">Green actual</b> = better than forecast/previous</span>
         <span><b style="color:#ef4444;">Red actual</b> = worse than forecast/previous</span>
         <span><b style="color:#e8e8e8;">White actual</b> = in line / no forecast</span>
@@ -534,7 +560,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 # ── Footer ──────────────────────────────────────────────────────────────────────
 st.divider()
 st.markdown(
