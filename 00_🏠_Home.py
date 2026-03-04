@@ -77,12 +77,19 @@ st.markdown(
     }}
     .support-fab:hover {{ opacity: 0.88; transform: translateY(-2px); }}
 
+    /* ── Metric cards ── */
     .metric-card {{
         background: #1e1e1e;
         border: 1px solid #2e2e2e;
         border-radius: 12px;
         padding: 20px 24px;
         text-align: center;
+        transition: border-color .2s, transform .2s, box-shadow .2s;
+    }}
+    .metric-card:hover {{
+        border-color: #f97316;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(249,115,22,0.15);
     }}
     .metric-card .metric-value {{
         font-size: 32px;
@@ -96,17 +103,25 @@ st.markdown(
         margin-top: 4px;
     }}
 
+    /* ── Feature cards ── */
     .feature-card {{
         background: #1a1a1a;
         border: 1px solid #2a2a2a;
         border-radius: 14px;
         padding: 28px 24px;
         height: 100%;
+        transition: border-color .2s, transform .2s, box-shadow .2s;
+    }}
+    .feature-card:hover {{
+        border-color: #f97316;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(249,115,22,0.15);
     }}
     .feature-card .icon {{ font-size: 32px; margin-bottom: 12px; }}
     .feature-card h3 {{ font-size: 18px; font-weight: 700; margin: 0 0 10px 0; color: #fff; }}
     .feature-card p  {{ font-size: 14px; color: #aaa; line-height: 1.6; margin: 0; }}
 
+    /* ── Asset badges ── */
     .asset-row {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }}
     .asset-badge {{
         background: #2a2a2a;
@@ -117,7 +132,42 @@ st.markdown(
         color: #bbb;
     }}
 
-    .step-row {{ display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }}
+    /* ── Quick Links ── */
+    .ql-wrap {{
+        background: #161616;
+        border: 1px solid #242424;
+        border-radius: 16px;
+        padding: 28px 24px;
+        display: flex; align-items: center; justify-content: center; gap: 12px;
+        font-size: 16px; font-weight: 700; color: #fff;
+        transition: border-color .2s, transform .2s, box-shadow .2s;
+        cursor: pointer;
+    }}
+    .ql-wrap:hover {{
+        border-color: #f97316;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(249,115,22,0.15);
+    }}
+    .ql-icon {{
+        font-size: 28px;
+        display: inline-block;
+        transition: transform .2s;
+    }}
+    .ql-wrap:hover .ql-icon {{
+        transform: scale(1.2);
+    }}
+
+    /* ── Step rows ── */
+    .step-row {{
+        display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px;
+        border-radius: 12px; padding: 12px;
+        transition: transform .2s, box-shadow .2s, background .2s;
+    }}
+    .step-row:hover {{
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(249,115,22,0.1);
+        background: #1a1a1a;
+    }}
     .step-num {{
         min-width: 36px; height: 36px;
         background: linear-gradient(135deg, #f97316, #ef4444);
@@ -129,12 +179,19 @@ st.markdown(
     .step-body h4 {{ margin: 0 0 4px 0; font-size: 15px; color: #fff; font-weight: 600; }}
     .step-body p  {{ margin: 0; font-size: 13px; color: #999; line-height: 1.6; }}
 
+    /* ── Roadmap cards ── */
     .roadmap-card {{
         background: #1a1a1a;
         border: 1px solid #2a2a2a;
         border-radius: 14px;
         padding: 24px;
         height: 100%;
+        transition: border-color .2s, transform .2s, box-shadow .2s;
+    }}
+    .roadmap-card:hover {{
+        border-color: #f97316;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(249,115,22,0.15);
     }}
     .roadmap-card h4 {{
         font-size: 15px;
@@ -164,6 +221,7 @@ st.markdown(
         margin-bottom: 12px;
     }}
 
+    /* ── Source cards ── */
     .source-card {{
         background: #161616;
         border: 1px solid #2a2a2a;
@@ -171,9 +229,13 @@ st.markdown(
         padding: 24px 20px;
         text-align: center;
         height: 100%;
-        transition: border-color .2s;
+        transition: border-color .2s, transform .2s, box-shadow .2s;
     }}
-    .source-card:hover {{ border-color: #f97316; }}
+    .source-card:hover {{
+        border-color: #f97316;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(249,115,22,0.15);
+    }}
     .source-card .src-icon {{ font-size: 36px; margin-bottom: 10px; }}
     .source-card h4 {{
         font-size: 15px; font-weight: 700;
@@ -184,6 +246,7 @@ st.markdown(
         line-height: 1.6; margin: 0;
     }}
 
+    /* ── Disclaimer ── */
     .disclaimer-box {{
         background: rgba(239,68,68,0.06);
         border: 1px solid rgba(239,68,68,0.25);
@@ -206,23 +269,7 @@ st.markdown(
     }}
     .disclaimer-box strong {{ color: #ddd; }}
 
-    .contact-box {{
-        background: #161616;
-        border: 1px solid #2a2a2a;
-        border-radius: 14px;
-        padding: 32px 28px;
-        text-align: center;
-        max-width: 480px;
-        margin: 0 auto;
-    }}
-    .contact-box h3 {{
-        font-size: 18px; font-weight: 700;
-        color: #fff; margin: 0 0 8px 0;
-    }}
-    .contact-box p {{
-        font-size: 13px; color: #888;
-        margin: 0 0 20px 0; line-height: 1.6;
-    }}
+    /* ── Contact ── */
     .contact-link {{
         display: inline-flex; align-items: center; gap: 8px;
         background: rgba(249,115,22,0.1);
@@ -274,11 +321,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ── Stats ────────────────────────────────────────────────────────────────────
+# ── Stats ─────────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 for col, (val, label) in zip(
     [c1, c2, c3, c4],
-    [("3", "Asset Classes"), ("5", "Timeframes"), ("100+", "Symbols"), ("4h", "Sentiment Refresh")],
+    [("5", "Pages"), ("5", "Timeframes"), ("100+", "Symbols"), ("4h", "Sentiment Refresh")],
 ):
     with col:
         st.markdown(
@@ -294,13 +341,45 @@ st.divider()
 
 
 # ═══════════════════════════════════════════════════════════════════
+# QUICK LINKS
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("## 🚀 Quick Links")
+st.markdown("<br>", unsafe_allow_html=True)
+
+ql1, ql2, ql3 = st.columns(3)
+for col, (emoji, label, url) in zip(
+    [ql1, ql2, ql3],
+    [
+        ("📊", "Dashboard",         "/Dashboard"),
+        ("📰", "News Feed",         "/News"),
+        ("📅", "Economic Calendar", "/Economic_Calendar"),
+    ],
+):
+    with col:
+        st.markdown(
+            f"""
+            <a href="{url}" target="_self" style="text-decoration:none;">
+                <div class="ql-wrap">
+                    <span class="ql-icon">{emoji}</span>
+                    {label}
+                </div>
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
+
+
+# ═══════════════════════════════════════════════════════════════════
 # CORE FEATURES
 # ═══════════════════════════════════════════════════════════════════
 st.markdown("## Core Features")
 st.markdown("<br>", unsafe_allow_html=True)
 
 for col, (icon, title, desc) in zip(
-    st.columns(4),
+    st.columns(6),
     [
         ("📈", "Candlestick & Volume",
          "Multi-timeframe OHLCV charts with dark styling, swing high/low markers, "
@@ -314,6 +393,12 @@ for col, (icon, title, desc) in zip(
         ("🧭", "Community Sentiment",
          "Long/Short % from Myfxbook community outlook, refreshed every 4 hours. "
          "Displayed as a donut chart alongside each symbol."),
+        ("📅", "Economic Calendar",
+         "High, medium impact events and holidays across G8 currencies. "
+         "Highlights actual vs forecast with color-coded results."),
+        ("📰", "News Feed",
+         "Financial & economic news across G8 markets. "
+         "Filter by country, keyword, and date range."),
     ],
 ):
     with col:
@@ -337,7 +422,7 @@ st.markdown("## Data Coverage")
 st.markdown("<br>", unsafe_allow_html=True)
 
 for col, (icon, title, desc, badges) in zip(
-    st.columns(3),
+    st.columns(5),
     [
         (
             "🌍", "Forex",
@@ -356,6 +441,18 @@ for col, (icon, title, desc, badges) in zip(
             "Major digital assets with spot price, volume, COT futures positioning "
             "(where available), market structure, and community sentiment.",
             ["BTC", "ETH", "XRP"],
+        ),
+        (
+            "📰", "News",
+            "Financial & economic news across G8 markets sourced from major outlets. "
+            "Filter by country, keyword, and date range.",
+            ["Australia", "Canada", "European Union", "Japan", "New Zealand", "Switzerland", "United Kingdom", "United States"],
+        ),
+        (
+            "📅", "Economic Calendar",
+            "High and medium impact events, holidays across G8 currencies. "
+            "Actual vs forecast with color-coded results.",
+            ["High Impact", "Medium", "Holiday", "AUD", "CAD", "CHF", "EUR", "GBP", "JPY", "NZD", "USD"],
         ),
     ],
 ):
@@ -416,7 +513,6 @@ st.divider()
 st.markdown("## How to Use")
 st.markdown("<br>", unsafe_allow_html=True)
 
-left, right = st.columns(2)
 steps = [
     ("1", "Select a Market Type",
      "Open the sidebar and choose Forex, Economic, or Crypto from the asset type selector."),
@@ -424,11 +520,16 @@ steps = [
      "Select one or more symbols to analyze. For Economic, you can filter by country."),
     ("3", "Choose Timeframes",
      "Select the timeframes you want: 1D, 1W, 1M, 3M, or 12M."),
-    ("4", "Analyze",
+    ("4", "Analyze Dashboard",
      "Charts, COT data, seasonality, and sentiment load automatically on the Dashboard."),
+    ("5", "Read the News",
+     "Go to News Feed to filter financial news by country, keyword, and date range."),
+    ("6", "Check Economic Calendar",
+     "Go to Economic Calendar to track upcoming high/medium impact events across G8 currencies."),
 ]
 
-for col, (num, title, desc) in zip([left, left, right, right], steps):
+left, right = st.columns(2)
+for col, (num, title, desc) in zip([left, left, left, right, right, right], steps):
     with col:
         st.markdown(
             f'<div class="step-row">'
@@ -450,7 +551,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="disclaimer-box">
-            
+
 All data, charts, analytics, and information presented on this platform are
 <strong>for educational and research purposes only</strong>.
 This platform does not provide financial, investment, legal, or tax advice.
