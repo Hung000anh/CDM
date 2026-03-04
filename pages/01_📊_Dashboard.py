@@ -75,7 +75,7 @@ st.markdown(
         </div>
         <h1 style="font-family:'Sora',sans-serif;font-size:38px;
                    font-weight:900;margin:0 0 6px 0;line-height:1.1;">
-            🫓 CDM Dashboard
+            📊 Dashboard
         </h1>
         <p style="font-size:14px;color:#666;margin:0 0 24px 0;">
             Multi-timeframe analysis — Candlestick, COT, Seasonality & Community Outlook
