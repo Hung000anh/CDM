@@ -32,13 +32,66 @@ KNOWN_INDICATORS = [
 
 SUPPORT_URL = "https://omg10.com/4/10659204"
 
+# ── Country name → flag image (flagcdn.com) ───────────────────────────────────
+COUNTRY_FLAG_CODE = {
+    "Australia":      "au",
+    "Canada":         "ca",
+    "Switzerland":    "ch",
+    "Euro Zone":        "eu",
+    "European Union":   "eu",
+    "United Kingdom": "gb",
+    "Japan":          "jp",
+    "New Zealand":    "nz",
+    "United States":  "us",
+    "Germany":        "de",
+    "France":         "fr",
+    "Italy":          "it",
+    "China":          "cn",
+    "India":          "in",
+    "Brazil":         "br",
+    "Russia":         "ru",
+    "South Korea":    "kr",
+    "Spain":          "es",
+    "Netherlands":    "nl",
+    "Sweden":         "se",
+    "Norway":         "no",
+}
+
+def country_flag_img(country_name: str, size: int = 28) -> str:
+    code = COUNTRY_FLAG_CODE.get(country_name, "")
+    if not code:
+        return "🌍"
+    url = f"https://flagcdn.com/w40/{code}.png"
+    return (
+        f'<img src="{url}" width="{size}" height="{size}" '
+        f'style="border-radius:50%;object-fit:cover;vertical-align:middle;'
+        f'border:1px solid rgba(255,255,255,0.12);margin-right:10px;'
+        f'box-shadow:0 2px 6px rgba(0,0,0,0.3);" />'
+    )
+
+def country_header_html(label: str, count: int, level: str = "h2") -> str:
+    """Render group header với flag tròn + tên + số symbol."""
+    flag   = country_flag_img(label)
+    fsizes = {"h2": "24px", "h3": "19px"}
+    fsize  = fsizes.get(level, "20px")
+    return (
+        f'<div style="display:flex;align-items:center;padding:6px 0 4px 0;">'
+        f'  {flag}'
+        f'  <span style="font-family:\'Sora\',sans-serif;font-size:{fsize};'
+        f'font-weight:800;color:#f0f0f0;">{label}</span>'
+        f'  <span style="font-size:12px;color:#555;margin-left:10px;'
+        f'font-weight:400;">{count} indicator{"s" if count != 1 else ""}</span>'
+        f'</div>'
+    )
+
+
 st.set_page_config(
     page_title="CDM | Dashboard",
     page_icon="🫓",
     layout="wide",
 )
 
-# ── Support Us button – luôn hiển thị góc dưới phải ─────────────────────────
+# ── Support Us button ─────────────────────────────────────────────────────────
 st.markdown(
     f"""
     <style>
@@ -84,6 +137,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 sidebar = render_sidebar()
 if not sidebar or not sidebar["symbols"]:
     st.markdown(
@@ -150,7 +204,7 @@ if is_economic:
         groups = dict(grouped)
 
     if is_all:
-        st.markdown("## 🌐 All")
+        # st.markdown("## 🌐 All")
         st.divider()
     elif len(selected_countries) > 1:
         names = ", ".join(c["name"] for c in selected_countries)
@@ -160,7 +214,12 @@ if is_economic:
     econ_records = []
 
     for group_label, syms in groups.items():
-        st.markdown(f"### 🌍 {group_label}" if is_all or len(selected_countries) > 1 else f"## 🌍 {group_label}")
+        # ── Group header với flag tròn ────────────────────────────────────────
+        level = "h3" if (is_all or len(selected_countries) > 1) else "h2"
+        st.markdown(
+            country_header_html(group_label, len(syms), level=level),
+            unsafe_allow_html=True,
+        )
         st.divider()
 
         cols = None
@@ -203,6 +262,7 @@ if is_economic:
     st.markdown("## 📊 Economic Indicators Summary")
     st.divider()
     render_economic_table(pd.DataFrame(econ_records), filter_country=None)
+    st.divider()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # NORMAL
@@ -270,14 +330,14 @@ else:
                         render_cot_chart(
                             df_cot,
                             symbol=sym["symbol"],
-                            cftc_name=sym.get("cftc_name", ""),   # ← thêm
+                            cftc_name=sym.get("cftc_name", ""),
                             lookback=52,
                             figsize=(18, 1.5),
                         )
                         render_net_noncommercial(
                             df_cot,
                             symbol=sym["symbol"],
-                            cftc_name=sym.get("cftc_name", ""),   # ← thêm
+                            cftc_name=sym.get("cftc_name", ""),
                             lookback=52,
                             figsize=(18, 1.5),
                         )
@@ -292,7 +352,6 @@ else:
                     )
 
         st.divider()
-
 
 st.markdown(
     f"<center style='color:#555;padding:12px 0 24px 0;font-size:13px;'>"
