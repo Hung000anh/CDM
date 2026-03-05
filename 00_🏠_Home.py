@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-SUPPORT_URL = "https://byvn.net/Hblp"
+SUPPORT_URL = "https://omg10.com/4/10659204"
 BMC_URL     = "https://buymeacoffee.com/hung000anh"
 GMAIL       = "hung000anh@gmail.com"
 

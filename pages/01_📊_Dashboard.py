@@ -30,7 +30,7 @@ KNOWN_INDICATORS = [
     "Industrial Production YoY", "Current Account To GDP", "Balance Of Trade",
 ]
 
-SUPPORT_URL = "https://byvn.net/Hblp"
+SUPPORT_URL = "https://omg10.com/4/10659204"
 
 st.set_page_config(
     page_title="CDM | Dashboard",

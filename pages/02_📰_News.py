@@ -21,7 +21,7 @@ import streamlit as st
 from core import get_client, cache_short
 from data.queries.symbols import get_countries
 
-SUPPORT_URL  = "https://byvn.net/Hblp"
+SUPPORT_URL  = "https://omg10.com/4/10659204"
 PAGE_SIZE    = 18   # số bài mỗi lần load
 
 st.set_page_config(

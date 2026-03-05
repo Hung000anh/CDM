@@ -20,7 +20,7 @@ if str(_ROOT) not in sys.path:
 import streamlit as st
 from core import get_client, cache_short
 
-SUPPORT_URL = "https://byvn.net/Hblp"
+SUPPORT_URL = "https://omg10.com/4/10659204"
 BMC_URL     = "https://buymeacoffee.com/hung000anh"
 GMAIL       = "hung000anh@gmail.com"
 
