@@ -1,7 +1,8 @@
 """
 components/tables/economic_table.py
 ────────────────────────────────────
-Render bảng Economic Indicators theo quốc gia dạng st.dataframe.
+Render bảng Economic Indicators theo quốc gia dạng HTML custom
+với flag ảnh tròn từ flagcdn.com.
 """
 
 import re
@@ -9,9 +10,7 @@ import pandas as pd
 import streamlit as st
 
 
-# Map theo tên country trong bảng countries của DB
 COUNTRY_CURRENCY = {
-    # Tên đầy đủ
     "European Union": "EUR",
     "United Kingdom": "GBP",
     "United States":  "USD",
@@ -20,13 +19,36 @@ COUNTRY_CURRENCY = {
     "Australia":      "AUD",
     "New Zealand":    "NZD",
     "Switzerland":    "CHF",
-    # Tên viết tắt (fallback nếu DB dùng tên ngắn)
     "Euro":           "EUR",
     "British":        "GBP",
     "Japanese":       "JPY",
     "Canadian":       "CAD",
     "Australian":     "AUD",
     "Swiss":          "CHF",
+}
+
+COUNTRY_FLAG_CODE = {
+    "Australia":      "au",
+    "Canada":         "ca",
+    "Switzerland":    "ch",
+    "European Union": "eu",
+    "Euro Zone":      "eu",
+    "United Kingdom": "gb",
+    "Japan":          "jp",
+    "New Zealand":    "nz",
+    "United States":  "us",
+    "Germany":        "de",
+    "France":         "fr",
+    "Italy":          "it",
+    "China":          "cn",
+    "India":          "in",
+    "Brazil":         "br",
+    "Russia":         "ru",
+    "South Korea":    "kr",
+    "Spain":          "es",
+    "Netherlands":    "nl",
+    "Sweden":         "se",
+    "Norway":         "no",
 }
 
 GDP_SCALE = 1e12
@@ -44,16 +66,16 @@ POINT_CHANGE_COLS = [
 ]
 
 COLS_ORDER = [
-    "GDP",
-    "Real GDP YoY",
-    "Government Budget",
-    "Government Debt To GDP",
-    "Interest Rate",
-    "Inflation Rate YoY",
-    "Unemployment Rate",
-    "Current Account To GDP",
-    "Industrial Production YoY",
-    "Balance Of Trade",
+    "Interest Rate",             # 1. Lãi suất – driver chính của tỷ giá
+    "Inflation Rate YoY",        # 2. Lạm phát – quyết định hướng lãi suất
+    "Real GDP YoY",              # 3. GDP tăng trưởng – sức mạnh kinh tế
+    "Unemployment Rate",         # 4. Thất nghiệp – Fed/CB theo dõi sát
+    "Industrial Production YoY", # 5. Sản xuất – leading indicator
+    "Balance Of Trade",          # 6. Cán cân thương mại – cung/cầu ngoại tệ
+    "Current Account To GDP",    # 7. Tài khoản vãng lai – dòng vốn dài hạn
+    "Government Budget",         # 8. Ngân sách – rủi ro tài khóa
+    "Government Debt To GDP",    # 9. Nợ công – rủi ro tín dụng
+    "GDP",                       # 10. GDP tuyệt đối – tham khảo quy mô
 ]
 
 RENAME_COLS = {
@@ -74,26 +96,10 @@ KNOWN_INDICATORS = [
 ]
 
 
-def _extract_indicator(name: str) -> str:
-    """
-    Strip prefix quốc gia: 'AU GDP' → 'GDP'.
-    Sort dài nhất trước để tránh 'Government Debt To GDP' match thành 'GDP'.
-    """
-    name = name.strip()
-    for ind in sorted(KNOWN_INDICATORS, key=len, reverse=True):
-        if name.endswith(ind):
-            return ind
-    return name
-
-
 def _scale(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    GDP: DB lưu raw (1752190000000) → chia 1e12 → T.
-    BOT: DB lưu raw (3373000000)    → chia 1e9  → B.
-    """
     df = df.copy()
     for col in ["current_value", "previous_value"]:
-        df.loc[df["indicator"] == "GDP",             col] /= GDP_SCALE
+        df.loc[df["indicator"] == "GDP",              col] /= GDP_SCALE
         df.loc[df["indicator"] == "Balance Of Trade", col] /= BOT_SCALE
     return df
 
@@ -133,49 +139,69 @@ def _format_display(row: pd.Series) -> str:
         return f"{current:.2f}"
 
 
-def _highlight(val: str, col_name: str) -> str:
+def _change_color(val: str, col_name: str) -> str:
     match = re.search(r"\(([-+]?[0-9.]+)", str(val))
     if not match:
-        return ""
+        return "#cccccc"
     change = float(match.group(1))
     if col_name in INVERSE_COLS:
-        color = "orangered" if change > 0 else ("springgreen" if change < 0 else "gold")
+        return "#ff4444" if change > 0 else ("#44dd88" if change < 0 else "#f0c040")
     else:
-        color = "springgreen" if change > 0 else ("orangered" if change < 0 else "gold")
-    return f"color: {color}; font-weight: bold"
+        return "#44dd88" if change > 0 else ("#ff4444" if change < 0 else "#f0c040")
+
+
+def _flag_html(country: str) -> str:
+    code = COUNTRY_FLAG_CODE.get(country, "")
+    if not code:
+        return '<span style="font-size:20px;">🌍</span>'
+    url = f"https://flagcdn.com/w40/{code}.png"
+    return (
+        f'<img src="{url}" width="26" height="26" '
+        f'style="border-radius:50%;object-fit:cover;vertical-align:middle;'
+        f'border:1px solid rgba(255,255,255,0.15);'
+        f'box-shadow:0 1px 4px rgba(0,0,0,0.4);flex-shrink:0;" />'
+    )
+
+
+def _cell_html(val: str, col_name: str) -> str:
+    empty_style = (
+        'style="text-align:right;padding:10px 14px;color:#333;'
+        'font-family:\'DM Mono\',monospace;font-size:12px;"'
+    )
+    if not val or val == "—":
+        return f'<td {empty_style}>—</td>'
+
+    color = _change_color(val, col_name)
+    match = re.match(r"^([^(]+)(\(.*\))?$", val.strip())
+    if match:
+        main   = match.group(1).strip()
+        change = match.group(2) or ""
+        inner  = (
+            f'<span style="color:#e8e8e8;font-weight:600;">{main}</span>'
+            + (f'<br><span style="font-size:10.5px;color:{color};">{change}</span>' if change else "")
+        )
+    else:
+        inner = f'<span style="color:#e8e8e8;">{val}</span>'
+
+    return (
+        f'<td style="text-align:right;padding:10px 14px;'
+        f'font-family:\'DM Mono\',monospace;font-size:12px;">'
+        f'{inner}</td>'
+    )
 
 
 def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -> None:
-    """
-    Render bảng Economic Indicators dùng st.dataframe với Styler.
-
-    Args:
-        df:             Output của get_economic_latest() hoặc df được build
-                        từ chosen_symbols — cột: country, indicator,
-                        current_value, previous_value
-        filter_country: Nếu truyền vào tên quốc gia (không phải 'Tất cả')
-                        thì chỉ hiển thị hàng của quốc gia đó.
-    """
     if df is None or df.empty:
         st.caption("⚠️ Không có dữ liệu bảng Economic.")
         return
 
-    # Filter theo quốc gia nếu cần
     if filter_country:
         df = df[df["country"] == filter_country]
         if df.empty:
             st.caption(f"⚠️ Không có dữ liệu cho **{filter_country}**.")
             return
 
-    # # ── DEBUG ──────────────────────────────────────────────────────────────
-    # print("[DEBUG] ALL rows BEFORE scale:")
-    # print(df[["country", "indicator", "current_value", "previous_value"]].to_string())
-
     df = _scale(df)
-
-    # print("[DEBUG] ALL rows AFTER scale:")
-    # print(df[["country", "indicator", "current_value", "previous_value"]].to_string())
-    # # ── END DEBUG ───────────────────────────────────────────────────────────
     df["display_value"] = df.apply(_format_display, axis=1)
 
     table = df.pivot_table(
@@ -184,22 +210,63 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
         values="display_value",
         aggfunc="first",
     )
-
     ordered = [c for c in COLS_ORDER if c in table.columns]
     extra   = [c for c in table.columns if c not in COLS_ORDER]
     table   = table[ordered + extra]
     table   = table.rename(columns=RENAME_COLS)
 
-    # Rename INVERSE_COLS sau khi đã rename cột
-    renamed_inverse = {RENAME_COLS.get(c, c) for c in INVERSE_COLS}
+    cols = list(table.columns)
 
-    styled = table.style.apply(
-        lambda col: [
-            _highlight(val, col.name) if col.name in renamed_inverse
-            else _highlight(val, col.name)
-            for val in col
-        ],
-        axis=0,
+    # ── Header row ────────────────────────────────────────────────────────────
+    th_style = (
+        'style="text-align:right;padding:10px 14px;font-size:11px;'
+        'font-weight:700;color:#555;letter-spacing:1px;'
+        'text-transform:uppercase;white-space:nowrap;'
+        'border-bottom:2px solid #2a2a2a;"'
     )
+    header_cells = "".join(f"<th {th_style}>{c}</th>" for c in cols)
 
-    st.dataframe(styled, width="stretch")
+    # ── Data rows ─────────────────────────────────────────────────────────────
+    rows_html = []
+    for country, row in table.iterrows():
+        flag  = _flag_html(str(country))
+        cells = "".join(_cell_html(str(row.get(c, "—")), c) for c in cols)
+        rows_html.append(
+            f'<tr style="border-bottom:1px solid #1a1a1a;transition:background .15s;"'
+            f' onmouseover="this.style.background=\'#1a1a1a\'"'
+            f' onmouseout="this.style.background=\'transparent\'">'
+            f'  <td style="padding:10px 16px;white-space:nowrap;">'
+            f'    <div style="display:flex;align-items:center;gap:10px;">'
+            f'      {flag}'
+            f'      <span style="font-size:13px;font-weight:700;color:#e0e0e0;">{country}</span>'
+            f'    </div>'
+            f'  </td>'
+            f'  {cells}'
+            f'</tr>'
+        )
+
+    html = f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+    .econ-wrap {{ overflow-x: auto; border-radius: 12px; border: 1px solid #222; margin-top: 8px; }}
+    .econ-tbl  {{ width: 100%; border-collapse: collapse; background: #111; }}
+    .econ-tbl thead tr {{ background: #0d0d0d; }}
+    </style>
+    <div class="econ-wrap">
+      <table class="econ-tbl">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:10px 16px;font-size:11px;
+                font-weight:700;color:#555;letter-spacing:1px;
+                text-transform:uppercase;border-bottom:2px solid #2a2a2a;">
+              Country
+            </th>
+            {header_cells}
+          </tr>
+        </thead>
+        <tbody>{"".join(rows_html)}</tbody>
+      </table>
+    </div>
+    """
+
+    st.markdown(html, unsafe_allow_html=True)
