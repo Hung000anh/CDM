@@ -163,7 +163,7 @@ If you find this project useful, consider supporting it:
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" height="45">
 </a>
 
-Or [click ads to support](https://byvn.net/Hblp) 🙏
+Or [click ads to support](https://omg10.com/4/10659204) 🙏
 
 ---
 
