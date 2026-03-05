@@ -51,7 +51,7 @@ TIMEFRAME_DAYS = {
 # ── Chart colors ──────────────────────────────────────────────────────────────
 COLOR_BULL    = "#ffffff"   # bullish candle
 COLOR_BEAR    = "#388e3c"   # bearish candle
-COLOR_LINE    = "#388e3c"   # line chart (Economic indicators)
+COLOR_LINE    = "#f97316"   # line chart (Economic indicators)
 COLOR_NONCOMM = "#2196F3"   # Non-commercial (speculators)
 COLOR_COMM    = "#FF9800"   # Commercial (hedgers)
 COLOR_NONREP  = "#9E9E9E"   # Non-reportable (small traders)
