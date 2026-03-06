@@ -37,7 +37,6 @@ def convert_time(time_str: str, target_tz_name: str) -> str:
         return time_str
     try:
         h, m = int(time_str[:2]), int(time_str[3:5])
-        # Use today's date so DST is applied correctly
         today_dt = datetime.now(DB_TZ).date()
         naive_dt = datetime(today_dt.year, today_dt.month, today_dt.day, h, m)
         localized = DB_TZ.localize(naive_dt, is_dst=None)
@@ -102,9 +101,18 @@ st.markdown(
         box-shadow: 0 4px 14px rgba(0,0,0,0.45); transition: opacity .2s, transform .2s;
     }}
     .support-fab:hover {{ opacity: 0.88; transform: translateY(-2px); }}
+
+    /* ── Table wrapper: scroll ngang trên mobile ── */
+    .cal-table-wrapper {{
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0 0 8px 8px;
+    }}
+
     .cal-header {{
         display: grid;
         grid-template-columns: 70px 60px 100px 1fr 90px 90px 90px;
+        min-width: 580px;
         padding: 10px 16px;
         background: #111; border-bottom: 1px solid #2a2a2a;
         font-size: 11px; font-weight: 700;
@@ -113,6 +121,7 @@ st.markdown(
     .cal-row {{
         display: grid;
         grid-template-columns: 70px 60px 100px 1fr 90px 90px 90px;
+        min-width: 580px;
         padding: 13px 16px;
         border-bottom: 1px solid #1a1a1a;
         align-items: center;
@@ -166,6 +175,17 @@ st.markdown(
     .summary-item {{ display: flex; align-items: center; gap: 8px; font-size: 13px; color: #888; }}
     .summary-dot {{ width: 10px; height: 10px; border-radius: 50%; }}
     .no-events {{ text-align: center; padding: 60px 0; color: #333; font-size: 14px; }}
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 768px) {{
+        .day-header {{ padding: 14px 10px 10px 10px; gap: 8px; }}
+        .day-header .day-num {{ font-size: 26px; }}
+        .day-header .day-name {{ font-size: 13px; }}
+        .day-header .day-count {{ font-size: 11px; }}
+        .support-fab {{ font-size: 13px; padding: 10px 18px; bottom: 16px; right: 12px; }}
+        .summary-bar {{ gap: 10px; padding: 12px; }}
+        .summary-item {{ font-size: 12px; }}
+    }}
     </style>
     <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click ads to Support Me</a>
     """,
@@ -363,12 +383,14 @@ def _impact_html(impact: str) -> str:
     )
 
 
-# ── Main layout: legend | calendar ────────────────────────────────────────────
+# ── Main layout: legend | calendar | right ────────────────────────────────────
 legend_col, cal_col, right_col = st.columns([1, 5, 1])
 
 with legend_col:
+    tz_short = selected_tz_label.split("(")[0].strip()
+
     st.markdown(
-        """
+        f"""
         <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:12px;padding:18px 14px;">
 
           <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#666;margin-bottom:16px;">📖 Guide</div>
@@ -395,7 +417,7 @@ with legend_col:
           </div>
 
           <div style="border-top:1px solid #1e1e1e;margin-top:14px;padding-top:10px;font-size:12px;color:#555;">
-            All times {selected_tz_label.split("(")[0].strip()}
+            All times {tz_short}
           </div>
         </div>
         """,
@@ -433,7 +455,6 @@ with legend_col:
             f'</div>'
         )
 
-    tz_short = selected_tz_label.split("(")[0].strip()
     st.markdown(
         f'<div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:12px;padding:18px 14px;">'
         f'<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;margin-bottom:12px;">🕐 Sessions</div>'
@@ -465,14 +486,16 @@ with legend_col:
     )
 
 with cal_col:
-    # ── Table header ──────────────────────────────────────────────────────────
+    # ── Table header wrapped in scroll container ───────────────────────────────
     st.markdown(
         """
+        <div class="cal-table-wrapper">
         <div class="cal-header">
             <div>Time</div><div>CCY</div><div>Impact</div><div>Event</div>
             <div style="text-align:right;padding-right:24px;">Actual</div>
             <div style="text-align:right;padding-right:24px;">Forecast</div>
             <div style="text-align:right;padding-right:24px;">Previous</div>
+        </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -537,7 +560,12 @@ with cal_col:
                 f'  <div class="cal-cell value previous">{previous_str}</div>'
                 f'</div>'
             )
-        st.markdown("".join(rows_html), unsafe_allow_html=True)
+
+        # Wrap rows trong scroll container
+        st.markdown(
+            '<div class="cal-table-wrapper">' + "".join(rows_html) + '</div>',
+            unsafe_allow_html=True,
+        )
 
     if not has_any:
         st.markdown(
@@ -558,7 +586,7 @@ with right_col:
         and ev.get("actual_value") in (None, "", "—")
         and str(ev.get("actual_value") or "").strip() in ("", "None", "nan", "—")
     ]
-    # Sort by date + time
+
     def _sort_key(ev):
         d = str(ev.get("event_date", ""))[:10]
         t = str(ev.get("event_time") or "23:59")[:5]
@@ -568,28 +596,27 @@ with right_col:
     items_html = ""
     prev_date  = None
     for ev in upcoming_high:
-        ev_date  = str(ev.get("event_date", ""))[:10]
+        ev_date     = str(ev.get("event_date", ""))[:10]
         ev_raw_time = str(ev.get("event_time") or "")[:5] or "All day"
-        ev_time  = convert_time(ev_raw_time, selected_tz) if ev_raw_time != "All day" else "All day"
-        currency = ev.get("currency", "")
-        name     = ev.get("event_name", "")
-        code     = CURRENCY_COUNTRY.get(currency, "")
-        flag_url = f"https://flagcdn.com/w40/{code}.png" if code else ""
-        flag_tag = (
+        ev_time     = convert_time(ev_raw_time, selected_tz) if ev_raw_time != "All day" else "All day"
+        currency    = ev.get("currency", "")
+        name        = ev.get("event_name", "")
+        code        = CURRENCY_COUNTRY.get(currency, "")
+        flag_url    = f"https://flagcdn.com/w40/{code}.png" if code else ""
+        flag_tag    = (
             f'<img src="{flag_url}" width="16" height="16" '
             f'style="border-radius:50%;object-fit:cover;vertical-align:middle;'
             f'border:1px solid rgba(255,255,255,0.15);margin-right:4px;" />'
             if flag_url else ""
         )
 
-        # Date separator
         if ev_date != prev_date:
             try:
                 from datetime import date as _date
                 label = _date.fromisoformat(ev_date).strftime("%a %b %d")
             except Exception:
                 label = ev_date
-            is_tod = ev_date == today_str
+            is_tod    = ev_date == today_str
             dot_color = "#f97316" if is_tod else "#444"
             items_html += (
                 f'<div style="font-size:12px;font-weight:700;color:{dot_color};'
