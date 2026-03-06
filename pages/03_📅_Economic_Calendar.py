@@ -652,7 +652,7 @@ with right_col:
           {items_html}
         </div>''',
         unsafe_allow_html=True,
-    )
+    ) 
 
 # ── Footer ──────────────────────────────────────────────────────────────────────
 st.divider()
