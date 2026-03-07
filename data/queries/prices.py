@@ -20,7 +20,7 @@ from config import DEFAULT_PAGE_SIZE
 def get_prices(
     symbol_timeframe_id: str,
     timeframe_name: str,
-    limit: int = 2000,
+    limit: int = 500,
 ) -> pd.DataFrame:
     """
     Trả về OHLCV DataFrame, giới hạn số nến gần nhất.

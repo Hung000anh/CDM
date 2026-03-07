@@ -27,7 +27,7 @@ from config import CACHE_TTL_SHORT, CACHE_TTL_MEDIUM, CACHE_TTL_LONG
 
 def cache_short(func=None, **kwargs):
     """Cache ngắn – phù hợp cho dữ liệu realtime / thay đổi thường xuyên."""
-    decorator = st.cache_data(ttl=CACHE_TTL_SHORT, **kwargs)
+    decorator = st.cache_data(ttl=CACHE_TTL_SHORT, max_entries=30, **kwargs)
     if func is not None:
         return decorator(func)
     return decorator
@@ -35,7 +35,7 @@ def cache_short(func=None, **kwargs):
 
 def cache_medium(func=None, **kwargs):
     """Cache trung bình (10 phút) – phù hợp cho OHLCV daily, COT reports."""
-    decorator = st.cache_data(ttl=CACHE_TTL_MEDIUM, **kwargs)
+    decorator = st.cache_data(ttl=CACHE_TTL_MEDIUM, max_entries=50, **kwargs)
     if func is not None:
         return decorator(func)
     return decorator
@@ -43,7 +43,7 @@ def cache_medium(func=None, **kwargs):
 
 def cache_long(func=None, **kwargs):
     """Cache dài (1 giờ) – phù hợp cho lookup tables ít thay đổi."""
-    decorator = st.cache_data(ttl=CACHE_TTL_LONG, **kwargs)
+    decorator = st.cache_data(ttl=CACHE_TTL_LONG, max_entries=20, **kwargs)
     if func is not None:
         return decorator(func)
     return decorator
