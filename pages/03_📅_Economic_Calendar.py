@@ -564,7 +564,7 @@ with cal_col:
         # Wrap rows trong scroll container
         st.markdown(
             '<div class="cal-table-wrapper">' + "".join(rows_html) + '</div>',
-            unsafe_allow_html=True,
+            unsafe_allow_html=True, 
         )
 
     if not has_any:
