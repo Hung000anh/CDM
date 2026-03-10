@@ -220,33 +220,33 @@ with st.sidebar:
 
     b1, b2 = st.columns(2)
     with b1:
-        if st.button("Today", use_container_width=True):
+        if st.button("Today", width='stretch'):
             st.session_state["cal_date_from"] = today
             st.session_state["cal_date_to"]   = today
     with b2:
-        if st.button("Next Day", use_container_width=True):
+        if st.button("Next Day", width='stretch'):
             tomorrow = today + timedelta(days=1)
             st.session_state["cal_date_from"] = tomorrow
             st.session_state["cal_date_to"]   = tomorrow
 
     b3, b4 = st.columns(2)
     with b3:
-        if st.button("This Week", use_container_width=True):
+        if st.button("This Week", width='stretch'):
             st.session_state["cal_date_from"] = today - timedelta(days=today.weekday())
             st.session_state["cal_date_to"]   = today - timedelta(days=today.weekday()) + timedelta(days=6)
     with b4:
-        if st.button("Next Week", use_container_width=True):
+        if st.button("Next Week", width='stretch'):
             next_mon = today - timedelta(days=today.weekday()) + timedelta(days=7)
             st.session_state["cal_date_from"] = next_mon
             st.session_state["cal_date_to"]   = next_mon + timedelta(days=6)
 
     b5, b6 = st.columns(2)
     with b5:
-        if st.button("This Month", use_container_width=True):
+        if st.button("This Month", width='stretch'):
             st.session_state["cal_date_from"] = today.replace(day=1)
             st.session_state["cal_date_to"]   = today.replace(day=last_day)
     with b6:
-        if st.button("Next Month", use_container_width=True):
+        if st.button("Next Month", width='stretch'):
             first_next = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
             st.session_state["cal_date_from"] = first_next
             st.session_state["cal_date_to"]   = first_next.replace(day=calendar.monthrange(first_next.year, first_next.month)[1])
@@ -289,12 +289,35 @@ with st.sidebar:
     selected_tz = TIMEZONE_OPTIONS[selected_tz_label]
     st.divider()
 
-    st.markdown(
-        f'<a href="{BMC_URL}" target="_blank" style="display:block;text-align:center;'
-        f'background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;font-weight:700;'
-        f'font-size:14px;padding:11px 0;border-radius:20px;text-decoration:none;">☕ Buy Me a Coffee</a>',
-        unsafe_allow_html=True,
-    )
+    bmc_col, kofi_col = st.columns(2)
+    with bmc_col:
+        st.markdown(
+            f"""
+            <a href="{BMC_URL}" target="_blank"
+            style="display:block;text-align:center;
+                    background:linear-gradient(135deg,#f97316,#ef4444);
+                    color:#fff;font-weight:700;font-size:13px;
+                    padding:11px 0;border-radius:20px;text-decoration:none;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                ☕ Buy Me a Coffee
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
+    with kofi_col:
+        st.markdown(
+            """
+            <a href="https://ko-fi.com/hunganhnguyen" target="_blank"
+            style="display:block;text-align:center;
+                    background:linear-gradient(135deg,#29abe0,#1a8cbf);
+                    color:#fff;font-weight:700;font-size:13px;
+                    padding:11px 0;border-radius:20px;text-decoration:none;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                🧡 Ko-fi
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
     st.markdown(
         f'<div style="margin-top:16px;padding:14px 16px;background:#1a1a1a;border:1px solid #2a2a2a;'
         f'border-radius:12px;text-align:center;">'
