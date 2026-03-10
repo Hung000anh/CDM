@@ -260,19 +260,35 @@ with st.sidebar:
     st.divider()
 
     # BMC + Contact
-    st.markdown(
-        f"""
-        <a href="{BMC_URL}" target="_blank"
-           style="display:block;text-align:center;
-                  background:linear-gradient(135deg,#f97316,#ef4444);
-                  color:#fff;font-weight:700;font-size:14px;
-                  padding:11px 0;border-radius:20px;text-decoration:none;
-                  box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-            ☕ Buy Me a Coffee
-        </a>
-        """,
-        unsafe_allow_html=True,
-    )
+    bmc_col, kofi_col = st.columns(2)
+    with bmc_col:
+        st.markdown(
+            f"""
+            <a href="{BMC_URL}" target="_blank"
+            style="display:block;text-align:center;
+                    background:linear-gradient(135deg,#f97316,#ef4444);
+                    color:#fff;font-weight:700;font-size:13px;
+                    padding:11px 0;border-radius:20px;text-decoration:none;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                ☕ Buy Me a Coffee
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
+    with kofi_col:
+        st.markdown(
+            """
+            <a href="https://ko-fi.com/hunganhnguyen" target="_blank"
+            style="display:block;text-align:center;
+                    background:linear-gradient(135deg,#29abe0,#1a8cbf);
+                    color:#fff;font-weight:700;font-size:13px;
+                    padding:11px 0;border-radius:20px;text-decoration:none;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                🧡 Ko-fi
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
     st.markdown(
         f"""
         <div style="margin-top:16px;padding:14px 16px;
@@ -434,7 +450,7 @@ if shown < total:
     with btn_col:
         if st.button(
             f"Load more  ({remaining} remaining)",
-            use_container_width=True,
+            width='stretch',
             key="news_load_more",
         ):
             st.session_state["news_offset"] = offset + PAGE_SIZE
