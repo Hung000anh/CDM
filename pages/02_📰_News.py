@@ -153,7 +153,6 @@ st.markdown(
         font-size: 13px !important;
     }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click ads to Support Me</a>
     """,
     unsafe_allow_html=True,
 )
@@ -189,8 +188,13 @@ def fetch_news(
     if date_to:
         q = q.lte("published_at", f"{date_to}T23:59:59+00:00")
 
-    res = q.execute()
-    return res.data or []
+    try:
+        res = q.execute()
+        return res.data or []
+    except Exception as e:
+        # We handle the error here so the app doesn't crash
+        st.error(f"📡 Database connection error: {e}")
+        return []
 
 
 @cache_short
@@ -215,8 +219,12 @@ def count_news(
     if date_to:
         q = q.lte("published_at", f"{date_to}T23:59:59+00:00")
 
-    res = q.execute()
-    return res.count or 0
+    try:
+        res = q.execute()
+        return res.count or 0
+    except Exception as e:
+        st.error(f"📡 Database connection error: {e}")
+        return 0
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -411,35 +419,31 @@ else:
                     date_str = pub[:10] if pub else ""
 
                 country_name = country_id_to_name.get(art.get("country_id", ""), "")
-                desc         = art.get("description") or ""
-                title        = art.get("title", "No title")
-                source       = art.get("source_domain", "")
-                url          = art.get("url", "#")
-
-                badge_html = (
-                    f'<span class="news-badge">{country_name}</span>'
-                    if country_name else ""
-                )
-
-                st.markdown(
-                    f"""
-                    <a class="news-card-link" href="{url}" target="_blank" rel="noopener noreferrer">
-                      <div class="news-card">
-                        {img_tag}
-                        <div class="news-card-body">
-                          <div class="news-card-meta">
-                            {badge_html}
-                            <span class="news-date">{date_str}</span>
-                          </div>
-                          <p class="news-card-title">{title}</p>
-                          {"<p class='news-card-desc'>" + desc + "</p>" if desc else ""}
-                          <div class="news-card-source">🔗 {source}</div>
-                        </div>
-                      </div>
-                    </a>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                # Clean data to avoid ANY markdown triggers (newlines + spaces = code block)
+                title  = (art.get("title") or "No title").strip().replace("\n", " ")
+                desc   = (art.get("description") or "").strip().replace("\n", " ")
+                source = (art.get("source_domain") or "").strip().replace("\n", " ")
+                url    = art.get("url", "#")
+                
+                badge_html = f'<span class="news-badge">{country_name}</span>' if country_name else ""
+                
+                # Render with ZERO leading spaces for every line including data
+                news_html = f"""
+<a class="news-card-link" href="{url}" target="_blank" rel="noopener noreferrer">
+<div class="news-card">
+{img_tag}
+<div class="news-card-body">
+<div class="news-card-meta">
+{badge_html}
+<span class="news-date">{date_str}</span>
+</div>
+<p class="news-card-title">{title}</p>
+{"<p class='news-card-desc'>" + desc + "</p>" if desc else ""}
+<div class="news-card-source">🔗 {source}</div>
+</div>
+</div>
+</a>""".strip()
+                st.markdown(news_html, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Load more button ──────────────────────────────────────────────────────────

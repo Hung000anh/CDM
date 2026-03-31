@@ -338,10 +338,16 @@ st.markdown(
 )
 
 # ── Stats ─────────────────────────────────────────────────────────────────────
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3, c4, c5 = st.columns(5)
 for col, (val, label) in zip(
-    [c1, c2, c3, c4],
-    [("5", "Pages"), ("5", "Timeframes"), ("100+", "Symbols"), ("4h", "Sentiment Refresh")],
+    [c1, c2, c3, c4, c5],
+    [
+        ("6", "Pages"), 
+        ("5", "Timeframes"), 
+        ("100+", "Symbols"), 
+        ("4h", "Sentiment Refresh"),
+        ("24/7", "News Updates")
+    ],
 ):
     with col:
         st.markdown(
@@ -362,13 +368,14 @@ st.divider()
 st.markdown("## 🚀 Quick Links")
 st.markdown("<br>", unsafe_allow_html=True)
 
-ql1, ql2, ql3 = st.columns(3)
+ql1, ql2, ql3, ql4 = st.columns(4)
 for col, (emoji, label, url) in zip(
-    [ql1, ql2, ql3],
+    [ql1, ql2, ql3, ql4],
     [
         ("📊", "Dashboard",         "/Dashboard"),
         ("📰", "News Feed",         "/News"),
         ("📅", "Economic Calendar", "/Economic_Calendar"),
+        ("🌡️", "Heatmap",           "/Heatmap"),
     ],
 ):
     with col:
@@ -388,44 +395,43 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
 
 
-# ═══════════════════════════════════════════════════════════════════
-# CORE FEATURES
-# ═══════════════════════════════════════════════════════════════════
-st.markdown("## Core Features")
+# ── Core Features ─────────────────────────────────────────────────────────────
+st.markdown("## ⚡ Core Features")
 st.markdown("<br>", unsafe_allow_html=True)
 
-for col, (icon, title, desc) in zip(
-    st.columns(6),
-    [
-        ("📈", "Candlestick & Volume",
-         "Multi-timeframe OHLCV charts with dark styling, swing high/low markers, "
-         "and moving averages across 1D, 1W, and 1M."),
-        ("📋", "COT Positioning",
-         "COT Index (0–100) for Commercials, Large Speculators, and Retail. "
-         "Highlights extreme zones and net non-commercial positions."),
-        ("🌊", "Seasonality",
-         "Monthly average % change over 2y, 5y, 10y, 15y, and 20y lookback periods. "
-         "Identifies recurring seasonal patterns per symbol."),
-        ("🧭", "Community Sentiment",
-         "Long/Short % from Myfxbook community outlook, refreshed every 4 hours. "
-         "Displayed as a donut chart alongside each symbol."),
-        ("📅", "Economic Calendar",
-         "High, medium impact events and holidays across G8 currencies. "
-         "Highlights actual vs forecast with color-coded results."),
-        ("📰", "News Feed",
-         "Financial & economic news across G8 markets. "
-         "Filter by country, keyword, and date range."),
-    ],
-):
-    with col:
-        st.markdown(
-            f'<div class="feature-card">'
-            f'<div class="icon">{icon}</div>'
-            f'<h3>{title}</h3>'
-            f'<p>{desc}</p>'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
+all_features = [
+    ("📈", "Price Action",
+     "High-end candlestick charts with dark styling, swing markers, and volume analysis across 1D, 1W, and 1M."),
+    ("📋", "COT Positioning",
+     "Real-time COT Index (0–100) for Commercials and Speculators, highlighting extremes and net-position trends."),
+    ("🌊", "Seasonality Edge",
+     "Statistical monthly performance averages over 2y to 20y. Time-tested seasonal patterns for every symbol."),
+    ("🧭", "Social Sentiment",
+     "Real-time long/short % from the Myfxbook community, refreshed every 4h with visual donut charts."),
+    ("🌡️", "Market Heatmap",
+     "A professional matrix to visualize cross-currency strength and identify alpha opportunities instantly."),
+    ("📊", "Macro Intelligence",
+     "Interactive heatmaps for global economic indicators (GDP, CPI, Rates) with healthcare color-coding."),
+    ("📅", "Smart Calendar",
+     "Filterable high-impact economic events and holidays for G8, with actual vs forecast highlights."),
+    ("🔬", "Interactive Analytics",
+     "Advanced crosshair highlighting and smooth animations to cross-reference market data with precision."),
+]
+
+# Chia thành 2 hàng, mỗi hàng 4 cột
+for i in range(0, len(all_features), 4):
+    cols = st.columns(4)
+    chunk = all_features[i:i+4]
+    for col, (icon, title, desc) in zip(cols, chunk):
+        with col:
+            st.markdown(
+                f'<div class="feature-card">'
+                f'<div class="icon">{icon}</div>'
+                f'<h3>{title}</h3>'
+                f'<p>{desc}</p>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
@@ -542,10 +548,12 @@ steps = [
      "Go to News Feed to filter financial news by country, keyword, and date range."),
     ("6", "Check Economic Calendar",
      "Go to Economic Calendar to track upcoming high/medium impact events across G8 currencies."),
+    ("7", "Explore Heatmap",
+     "Use Heatmap to visualize cross-currency strength and economic indicator health at a glance."),
 ]
 
-left, right = st.columns(2)
-for col, (num, title, desc) in zip([left, left, left, right, right, right], steps):
+left, mid, right = st.columns(3)
+for col, (num, title, desc) in zip([left, left, left, mid, mid, right, right], steps):
     with col:
         st.markdown(
             f'<div class="step-row">'
