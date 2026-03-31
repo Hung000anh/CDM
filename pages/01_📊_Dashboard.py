@@ -115,7 +115,6 @@ st.markdown(
         transform: translateY(-2px);
     }}
     </style>
-    <a class="support-fab" href="{SUPPORT_URL}" target="_blank">🙏 Click ads to Support Me</a>
     """,
     unsafe_allow_html=True,
 )
