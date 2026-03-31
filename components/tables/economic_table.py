@@ -190,6 +190,31 @@ def _cell_html(val: str, col_name: str) -> str:
     )
 
 
+def _get_score(val_str: str, indicator: str, all_vals: list[float]) -> float:
+    # Trích xuất số thực từ chuỗi hiển thị (ví dụ "5.20% (+0.10 pts)" -> 5.20)
+    import re
+    match = re.match(r"^([-+]?[0-9.]+)", str(val_str).strip())
+    if not match: return 0.5
+    try:
+        val = float(match.group(1))
+    except: return 0.5
+    
+    clean_all = []
+    for v in all_vals:
+        if pd.notna(v): clean_all.append(v)
+    if not clean_all: return 0.5
+    
+    min_v, max_v = min(clean_all), max(clean_all)
+    if max_v == min_v: return 0.5
+    
+    score = (val - min_v) / (max_v - min_v)
+    
+    # Một số chỉ số "càng cao càng xấu" (Nợ, Thất nghiệp, Lạm phát cao quá mức)
+    inverse_indicators = ["Unemployment Rate", "Inflation Rate", "Gov Debt/GDP", "Inflation Rate YoY", "Government Debt To GDP"]
+    if any(ind in indicator for ind in inverse_indicators):
+        score = 1 - score
+    return score
+
 def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -> None:
     if df is None or df.empty:
         st.caption("⚠️ Không có dữ liệu bảng Economic.")
@@ -202,64 +227,137 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
             return
 
     df = _scale(df)
+    
+    # Chuẩn bị dữ liệu số để tính toán heatmap color
+    num_df = df.pivot(index="country", columns="indicator", values="current_value")
+    
     df["display_value"] = df.apply(_format_display, axis=1)
-
     table = df.pivot_table(
         index="country",
         columns="indicator",
         values="display_value",
         aggfunc="first",
     )
+    
     ordered = [c for c in COLS_ORDER if c in table.columns]
     extra   = [c for c in table.columns if c not in COLS_ORDER]
     table   = table[ordered + extra]
     table   = table.rename(columns=RENAME_COLS)
-
+    
     cols = list(table.columns)
 
-    # ── Header row ────────────────────────────────────────────────────────────
-    th_style = (
-        'style="text-align:right;padding:10px 14px;font-size:13px;'
-        'font-weight:700;color:#555;letter-spacing:1px;'
-        'text-transform:uppercase;white-space:nowrap;'
-        'border-bottom:2px solid #2a2a2a;"'
-    )
-    header_cells = "".join(f"<th {th_style}>{c}</th>" for c in cols)
-
-    # ── Data rows ─────────────────────────────────────────────────────────────
     rows_html = []
     for country, row in table.iterrows():
-        flag  = _flag_html(str(country))
-        cells = "".join(_cell_html(str(row.get(c, "—")), c) for c in cols)
+        flag = _flag_html(str(country))
+        cells = []
+        for c_name in cols:
+            val_str = str(row.get(c_name, "—"))
+            
+            # Tính toán màu nền Heatmap
+            orig_col = next((k for k, v in RENAME_COLS.items() if v == c_name), c_name)
+            col_data = num_df[orig_col].tolist() if orig_col in num_df.columns else []
+            score = _get_score(val_str, orig_col, col_data)
+            
+            # Mix màu: Red (0) -> Yellow (0.5) -> Green (1)
+            if score > 0.5:
+                # Greenish
+                intensity = (score - 0.5) * 2
+                bg_color = f"rgba(8, 153, 129, {0.1 + 0.3 * intensity})"
+                text_color = "#44dd88"
+            else:
+                # Redish
+                intensity = (0.5 - score) * 2
+                bg_color = f"rgba(242, 54, 69, {0.1 + 0.3 * intensity})"
+                text_color = "#ff6666"
+                
+            if val_str == "—":
+                bg_color = "transparent"
+                text_color = "#444"
+
+            cells.append(
+                f'<td style="text-align:right;padding:12px 14px;background:{bg_color};'
+                f'border:1px solid #1a1a1a;transition:all 0.3s;">'
+                f'<div style="color:{text_color};font-family:\'DM Mono\',monospace;font-weight:600;font-size:14px;">'
+                f'{val_str}</div></td>'
+            )
+
         rows_html.append(
-            f'<tr style="border-bottom:1px solid #1a1a1a;transition:background .15s;"'
-            f' onmouseover="this.style.background=\'#1a1a1a\'"'
-            f' onmouseout="this.style.background=\'transparent\'">'
-            f'  <td style="padding:10px 16px;white-space:nowrap;">'
-            f'    <div style="display:flex;align-items:center;gap:10px;">'
+            f'<tr class="econ-row">'
+            f'  <td style="padding:12px 16px;white-space:nowrap;background:#0d0d0d;border:1px solid #1a1a1a;">'
+            f'    <div style="display:flex;align-items:center;gap:12px;">'
             f'      {flag}'
-            f'      <span style="font-size:15px;font-weight:700;color:#e0e0e0;">{country}</span>'
+            f'      <span style="font-size:14px;font-weight:700;color:#f0f3fa;">{country}</span>'
             f'    </div>'
             f'  </td>'
-            f'  {cells}'
+            f'  {"".join(cells)}'
             f'</tr>'
         )
 
+    th_style = (
+        'style="text-align:right;padding:14px 18px;font-size:11px;'
+        'font-weight:800;color:#848e9c;letter-spacing:1px;min-width:140px;'
+        'text-transform:uppercase;border:1px solid #1a1a1a;background:#161a25;"'
+    )
+    header_cells = "".join(f"<th {th_style}>{c}</th>" for c in cols)
+
     html = f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
-    .econ-wrap {{ overflow-x: auto; border-radius: 12px; border: 1px solid #222; margin-top: 8px; }}
-    .econ-tbl  {{ width: 100%; border-collapse: collapse; background: #111; }}
-    .econ-tbl thead tr {{ background: #0d0d0d; }}
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;600&family=Sora:wght@400;700&display=swap');
+    .econ-container {{
+        overflow-x: auto;
+        border-radius: 16px;
+        border: 1px solid #2a2e39;
+        margin: 20px 0;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        background: #0b0e14;
+    }}
+    .econ-tbl {{
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Sora', sans-serif;
+    }}
+    .econ-row {{
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
+        animation: fadeIn 0.6s ease forwards;
+        opacity: 0;
+    }}
+    .econ-row:hover {{
+        background: rgba(255,255,255,0.07) !important;
+        transform: scale(1.005);
+        z-index: 10;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }}
+    .econ-tbl td {{
+        padding: 14px 18px;
+        border: 1px solid #1a1a1a;
+        min-width: 140px;
+    }}
+    .country-cell {{
+        min-width: 220px !important;
+        background: #0d0d0d !important;
+        position: sticky;
+        left: 0;
+        z-index: 5;
+    }}
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: translateY(15px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    .econ-row:nth-child(1) {{ animation-delay: 0.1s; }}
+    .econ-row:nth-child(2) {{ animation-delay: 0.15s; }}
+    .econ-row:nth-child(3) {{ animation-delay: 0.2s; }}
+    .econ-row:nth-child(4) {{ animation-delay: 0.25s; }}
+    .econ-row:nth-child(5) {{ animation-delay: 0.3s; }}
     </style>
-    <div class="econ-wrap">
+    <div class="econ-container">
       <table class="econ-tbl">
         <thead>
           <tr>
-            <th style="text-align:left;padding:10px 16px;font-size:13px;
-                font-weight:700;color:#555;letter-spacing:1px;
-                text-transform:uppercase;border-bottom:2px solid #2a2a2a;">
-              Country
+            <th style="text-align:left;padding:14px 20px;font-size:11px;
+                font-weight:800;color:#848e9c;letter-spacing:1px;min-width:220px;
+                text-transform:uppercase;border:1px solid #1a1a1a;background:#161a25;
+                position:sticky;left:0;z-index:6;">
+              Market / Indicator
             </th>
             {header_cells}
           </tr>
@@ -268,5 +366,4 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
       </table>
     </div>
     """
-
     st.markdown(html, unsafe_allow_html=True)
