@@ -20,7 +20,7 @@ from config import DEFAULT_PAGE_SIZE
 def get_prices(
     symbol_timeframe_id: str,
     timeframe_name: str,
-    limit: int = 500,
+    limit: int = 100,
 ) -> pd.DataFrame:
     """
     Trả về OHLCV DataFrame, giới hạn số nến gần nhất.
@@ -64,3 +64,38 @@ def get_prices(
 
     # Đảo lại thứ tự tăng dần theo thời gian
     return df.sort_values("timestamp").reset_index(drop=True)
+
+
+@cache_medium
+def get_latest_prices(symbol_timeframe_ids: list[str], num_prices: int = 2) -> dict[str, list[float]]:
+    """
+    Trả về dict với key là symbol_timeframe_id và value là list giá đóng cửa gần nhất.
+
+    Args:
+        symbol_timeframe_ids: List UUID từ bảng symbol_timeframes
+        num_prices:           Số giá gần nhất cần lấy cho mỗi id (mặc định 2)
+
+    Returns:
+        Dict với key=symbol_timeframe_id, value=list các giá đóng cửa gần nhất
+    """
+    if not symbol_timeframe_ids:
+        return {}
+
+    client = get_client()
+
+    result = {}
+    for stf_id in symbol_timeframe_ids:
+        # Query riêng cho mỗi ID với limit để tối ưu
+        res = (
+            client.table("prices")
+            .select("close")
+            .eq("symbol_timeframe_id", stf_id)
+            .order("timestamp", desc=True)
+            .limit(num_prices)
+            .execute()
+        )
+        data = res.data or []
+        prices = [float(row["close"]) for row in data if row.get("close") is not None]
+        result[stf_id] = prices
+
+    return result

@@ -166,7 +166,7 @@ def _flag_html(country: str) -> str:
 def _cell_html(val: str, col_name: str) -> str:
     empty_style = (
         'style="text-align:right;padding:10px 14px;color:#333;'
-        'font-family:\'DM Mono\',monospace;font-size:12px;"'
+        'font-family:\'DM Mono\',monospace;font-size:14px;"'
     )
     if not val or val == "—":
         return f'<td {empty_style}>—</td>'
@@ -178,14 +178,14 @@ def _cell_html(val: str, col_name: str) -> str:
         change = match.group(2) or ""
         inner  = (
             f'<span style="color:#e8e8e8;font-weight:600;">{main}</span>'
-            + (f'<br><span style="font-size:10.5px;color:{color};">{change}</span>' if change else "")
+            + (f'<br><span style="font-size:12px;color:{color};">{change}</span>' if change else "")
         )
     else:
         inner = f'<span style="color:#e8e8e8;">{val}</span>'
 
     return (
         f'<td style="text-align:right;padding:10px 14px;'
-        f'font-family:\'DM Mono\',monospace;font-size:12px;">'
+        f'font-family:\'DM Mono\',monospace;font-size:14px;">'
         f'{inner}</td>'
     )
 
@@ -219,7 +219,7 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
 
     # ── Header row ────────────────────────────────────────────────────────────
     th_style = (
-        'style="text-align:right;padding:10px 14px;font-size:11px;'
+        'style="text-align:right;padding:10px 14px;font-size:13px;'
         'font-weight:700;color:#555;letter-spacing:1px;'
         'text-transform:uppercase;white-space:nowrap;'
         'border-bottom:2px solid #2a2a2a;"'
@@ -238,7 +238,7 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
             f'  <td style="padding:10px 16px;white-space:nowrap;">'
             f'    <div style="display:flex;align-items:center;gap:10px;">'
             f'      {flag}'
-            f'      <span style="font-size:13px;font-weight:700;color:#e0e0e0;">{country}</span>'
+            f'      <span style="font-size:15px;font-weight:700;color:#e0e0e0;">{country}</span>'
             f'    </div>'
             f'  </td>'
             f'  {cells}'
@@ -256,7 +256,7 @@ def render_economic_table(df: pd.DataFrame, filter_country: str | None = None) -
       <table class="econ-tbl">
         <thead>
           <tr>
-            <th style="text-align:left;padding:10px 16px;font-size:11px;
+            <th style="text-align:left;padding:10px 16px;font-size:13px;
                 font-weight:700;color:#555;letter-spacing:1px;
                 text-transform:uppercase;border-bottom:2px solid #2a2a2a;">
               Country
